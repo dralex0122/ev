@@ -13,7 +13,10 @@ import os
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
+
+MAX_WORKERS = 10
 
 BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
@@ -207,27 +210,32 @@ def main():
     now_kst = now_utc.astimezone(KST)
     hour_label = now_kst.strftime("%H시")
 
-    print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울시 25개구 수집 시작 ===")
+    print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울시 25개구 수집 시작 (병렬 {MAX_WORKERS}) ===")
 
     written_files = []
-    for gu_name, zscode in SEOUL_DISTRICTS:
-        print(f"- {gu_name} 수집 중...")
-        try:
-            result = analyze_district(gu_name, zscode, service_key)
-        except Exception as e:
-            print(f"  {gu_name} 수집 실패: {e}", file=sys.stderr)
-            continue
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {
+            executor.submit(analyze_district, gu_name, zscode, service_key): gu_name
+            for gu_name, zscode in SEOUL_DISTRICTS
+        }
+        for future in as_completed(futures):
+            gu_name = futures[future]
+            try:
+                result = future.result()
+            except Exception as e:
+                print(f"  {gu_name} 수집 실패: {e}", file=sys.stderr)
+                continue
 
-        result["collected_at_kst"] = now_kst.isoformat()
-        result["collected_at_utc"] = now_utc.isoformat()
+            result["collected_at_kst"] = now_kst.isoformat()
+            result["collected_at_utc"] = now_utc.isoformat()
 
-        gu_dir = os.path.join(repo_dir, OUTPUT_ROOT, gu_name)
-        os.makedirs(gu_dir, exist_ok=True)
-        file_path = os.path.join(gu_dir, f"{hour_label}.json")
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(result, f, ensure_ascii=False, indent=2)
-        written_files.append(os.path.join(OUTPUT_ROOT, gu_name, f"{hour_label}.json"))
-        print(f"  -> {file_path} 저장 완료 (가용률 {result['summary']['total_percent']}%)")
+            gu_dir = os.path.join(repo_dir, OUTPUT_ROOT, gu_name)
+            os.makedirs(gu_dir, exist_ok=True)
+            file_path = os.path.join(gu_dir, f"{hour_label}.json")
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            written_files.append(os.path.join(OUTPUT_ROOT, gu_name, f"{hour_label}.json"))
+            print(f"- {gu_name} 완료 (가용률 {result['summary']['total_percent']}%) -> {file_path}")
 
     if not written_files:
         print("저장된 파일이 없어 커밋을 건너뜁니다.", file=sys.stderr)
