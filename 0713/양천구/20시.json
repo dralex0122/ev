@@ -3,14 +3,14 @@
   "zscode": "11470",
   "summary": {
     "total_count": 2256,
-    "available_count": 1605,
-    "total_percent": 71.1,
+    "available_count": 1571,
+    "total_percent": 69.6,
     "slow_total": 2005,
-    "slow_avail": 1396,
-    "slow_percent": 69.6,
+    "slow_avail": 1369,
+    "slow_percent": 68.3,
     "fast_total": 251,
-    "fast_avail": 209,
-    "fast_percent": 83.3,
+    "fast_avail": 202,
+    "fast_percent": 80.5,
     "station_count": 452
   },
   "stations": [
@@ -38,15 +38,15 @@
       "lat": "37.519388",
       "lng": "126.8523361",
       "total_count": 41,
-      "available_count": 31,
-      "total_percent": 75.6,
+      "available_count": 30,
+      "total_percent": 73.2,
       "slow_total": 41,
-      "slow_avail": 31,
-      "slow_percent": 75.6,
+      "slow_avail": 30,
+      "slow_percent": 73.2,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713192450"
+      "latest_update": "20260713201650"
     },
     {
       "station_id": "CU201005",
@@ -89,15 +89,15 @@
       "lat": "37.5273218",
       "lng": "126.8746191",
       "total_count": 33,
-      "available_count": 19,
-      "total_percent": 57.6,
+      "available_count": 18,
+      "total_percent": 54.5,
       "slow_total": 33,
-      "slow_avail": 19,
-      "slow_percent": 57.6,
+      "slow_avail": 18,
+      "slow_percent": 54.5,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200525"
+      "latest_update": "20260713201746"
     },
     {
       "station_id": "SF001344",
@@ -199,7 +199,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200035"
+      "latest_update": "20260713201548"
     },
     {
       "station_id": "LU000997",
@@ -233,7 +233,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713192715"
+      "latest_update": "20260713202006"
     },
     {
       "station_id": "PI204337",
@@ -250,7 +250,7 @@
       "fast_total": 2,
       "fast_avail": 2,
       "fast_percent": 100.0,
-      "latest_update": "20260713194205"
+      "latest_update": "20260713201710"
     },
     {
       "station_id": "HY000818",
@@ -259,15 +259,15 @@
       "lat": "37.5273218",
       "lng": "126.8746191",
       "total_count": 21,
-      "available_count": 20,
-      "total_percent": 95.2,
+      "available_count": 19,
+      "total_percent": 90.5,
       "slow_total": 15,
-      "slow_avail": 14,
-      "slow_percent": 93.3,
+      "slow_avail": 13,
+      "slow_percent": 86.7,
       "fast_total": 6,
       "fast_avail": 6,
       "fast_percent": 100.0,
-      "latest_update": "20260713193603"
+      "latest_update": "20260713201205"
     },
     {
       "station_id": "CU201001",
@@ -361,15 +361,15 @@
       "lat": "37.52999",
       "lng": "126.87507",
       "total_count": 17,
-      "available_count": 7,
-      "total_percent": 41.2,
+      "available_count": 6,
+      "total_percent": 35.3,
       "slow_total": 17,
-      "slow_avail": 7,
-      "slow_percent": 41.2,
+      "slow_avail": 6,
+      "slow_percent": 35.3,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200651"
+      "latest_update": "20260713201650"
     },
     {
       "station_id": "PI001334",
@@ -378,15 +378,15 @@
       "lat": "37.5236946",
       "lng": "126.876697",
       "total_count": 17,
-      "available_count": 15,
-      "total_percent": 88.2,
+      "available_count": 6,
+      "total_percent": 35.3,
       "slow_total": 17,
-      "slow_avail": 15,
-      "slow_percent": 88.2,
+      "slow_avail": 6,
+      "slow_percent": 35.3,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200642"
+      "latest_update": "20260713202322"
     },
     {
       "station_id": "PL033409",
@@ -497,15 +497,15 @@
       "lat": "37.507068427",
       "lng": "126.83628083",
       "total_count": 16,
-      "available_count": 13,
-      "total_percent": 81.2,
+      "available_count": 12,
+      "total_percent": 75.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 16,
-      "fast_avail": 13,
-      "fast_percent": 81.2,
-      "latest_update": "20260713200619"
+      "fast_avail": 12,
+      "fast_percent": 75.0,
+      "latest_update": "20260713202029"
     },
     {
       "station_id": "PMP00502",
@@ -556,7 +556,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713193645"
+      "latest_update": "20260713201758"
     },
     {
       "station_id": "DYME2066",
@@ -599,15 +599,15 @@
       "lat": "37.529250",
       "lng": "126.867093",
       "total_count": 14,
-      "available_count": 8,
-      "total_percent": 57.1,
+      "available_count": 7,
+      "total_percent": 50.0,
       "slow_total": 14,
-      "slow_avail": 8,
-      "slow_percent": 57.1,
+      "slow_avail": 7,
+      "slow_percent": 50.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713195105"
+      "latest_update": "20260713201958"
     },
     {
       "station_id": "PK000004",
@@ -735,15 +735,15 @@
       "lat": "37.5120948",
       "lng": "126.8602911",
       "total_count": 11,
-      "available_count": 5,
-      "total_percent": 45.5,
+      "available_count": 4,
+      "total_percent": 36.4,
       "slow_total": 11,
-      "slow_avail": 5,
-      "slow_percent": 45.5,
+      "slow_avail": 4,
+      "slow_percent": 36.4,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713195705"
+      "latest_update": "20260713202034"
     },
     {
       "station_id": "SE000102",
@@ -769,15 +769,15 @@
       "lat": "37.5292903",
       "lng": "126.8800785",
       "total_count": 10,
-      "available_count": 10,
-      "total_percent": 100.0,
+      "available_count": 8,
+      "total_percent": 80.0,
       "slow_total": 4,
       "slow_avail": 4,
       "slow_percent": 100.0,
       "fast_total": 6,
-      "fast_avail": 6,
-      "fast_percent": 100.0,
-      "latest_update": "20260713192532"
+      "fast_avail": 4,
+      "fast_percent": 66.7,
+      "latest_update": "20260713201535"
     },
     {
       "station_id": "CV003473",
@@ -786,15 +786,15 @@
       "lat": "37.52916",
       "lng": "126.873548",
       "total_count": 10,
-      "available_count": 10,
-      "total_percent": 100.0,
+      "available_count": 9,
+      "total_percent": 90.0,
       "slow_total": 6,
-      "slow_avail": 6,
-      "slow_percent": 100.0,
+      "slow_avail": 5,
+      "slow_percent": 83.3,
       "fast_total": 4,
       "fast_avail": 4,
       "fast_percent": 100.0,
-      "latest_update": "20260713195048"
+      "latest_update": "20260713202043"
     },
     {
       "station_id": "EC000361",
@@ -803,15 +803,15 @@
       "lat": "37.5154811",
       "lng": "126.831233",
       "total_count": 10,
-      "available_count": 5,
-      "total_percent": 50.0,
+      "available_count": 6,
+      "total_percent": 60.0,
       "slow_total": 10,
-      "slow_avail": 5,
-      "slow_percent": 50.0,
+      "slow_avail": 6,
+      "slow_percent": 60.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713192002"
+      "latest_update": "20260713201201"
     },
     {
       "station_id": "NT102435",
@@ -888,15 +888,15 @@
       "lat": "37.5321753",
       "lng": "126.8767430",
       "total_count": 10,
-      "available_count": 7,
-      "total_percent": 70.0,
+      "available_count": 4,
+      "total_percent": 40.0,
       "slow_total": 10,
-      "slow_avail": 7,
-      "slow_percent": 70.0,
+      "slow_avail": 4,
+      "slow_percent": 40.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713194813"
+      "latest_update": "20260713201837"
     },
     {
       "station_id": "PL032836",
@@ -1075,15 +1075,15 @@
       "lat": "37.5084767",
       "lng": "126.8610084",
       "total_count": 8,
-      "available_count": 7,
-      "total_percent": 87.5,
+      "available_count": 6,
+      "total_percent": 75.0,
       "slow_total": 8,
-      "slow_avail": 7,
-      "slow_percent": 87.5,
+      "slow_avail": 6,
+      "slow_percent": 75.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713190017"
+      "latest_update": "20260713201520"
     },
     {
       "station_id": "CU201004",
@@ -1109,15 +1109,15 @@
       "lat": "37.512187",
       "lng": "126.833078",
       "total_count": 8,
-      "available_count": 6,
-      "total_percent": 75.0,
+      "available_count": 7,
+      "total_percent": 87.5,
       "slow_total": 6,
-      "slow_avail": 4,
-      "slow_percent": 66.7,
+      "slow_avail": 5,
+      "slow_percent": 83.3,
       "fast_total": 2,
       "fast_avail": 2,
       "fast_percent": 100.0,
-      "latest_update": "20260713190047"
+      "latest_update": "20260713201023"
     },
     {
       "station_id": "EC001045",
@@ -1143,15 +1143,15 @@
       "lat": "37.508120",
       "lng": "126.871297",
       "total_count": 8,
-      "available_count": 6,
-      "total_percent": 75.0,
+      "available_count": 4,
+      "total_percent": 50.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 8,
-      "fast_avail": 6,
-      "fast_percent": 75.0,
-      "latest_update": "20260713194941"
+      "fast_avail": 4,
+      "fast_percent": 50.0,
+      "latest_update": "20260713201903"
     },
     {
       "station_id": "EV003473",
@@ -1245,15 +1245,15 @@
       "lat": "37.520169056",
       "lng": "126.84112893",
       "total_count": 8,
-      "available_count": 8,
-      "total_percent": 100.0,
+      "available_count": 7,
+      "total_percent": 87.5,
       "slow_total": 8,
-      "slow_avail": 8,
-      "slow_percent": 100.0,
+      "slow_avail": 7,
+      "slow_percent": 87.5,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713184207"
+      "latest_update": "20260713201237"
     },
     {
       "station_id": "PK000295",
@@ -1262,15 +1262,15 @@
       "lat": "37.5085600",
       "lng": "126.8374100",
       "total_count": 8,
-      "available_count": 5,
-      "total_percent": 62.5,
+      "available_count": 3,
+      "total_percent": 37.5,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 8,
-      "fast_avail": 5,
-      "fast_percent": 62.5,
-      "latest_update": "20260713200700"
+      "fast_avail": 3,
+      "fast_percent": 37.5,
+      "latest_update": "20260713202211"
     },
     {
       "station_id": "PWE06335",
@@ -1313,15 +1313,15 @@
       "lat": "37.5119334",
       "lng": "126.8584119",
       "total_count": 7,
-      "available_count": 3,
-      "total_percent": 42.9,
+      "available_count": 2,
+      "total_percent": 28.6,
       "slow_total": 7,
-      "slow_avail": 3,
-      "slow_percent": 42.9,
+      "slow_avail": 2,
+      "slow_percent": 28.6,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200016"
+      "latest_update": "20260713201515"
     },
     {
       "station_id": "EV011639",
@@ -1636,15 +1636,15 @@
       "lat": "37.5152054",
       "lng": "126.859099",
       "total_count": 6,
-      "available_count": 6,
-      "total_percent": 100.0,
+      "available_count": 5,
+      "total_percent": 83.3,
       "slow_total": 6,
-      "slow_avail": 6,
-      "slow_percent": 100.0,
+      "slow_avail": 5,
+      "slow_percent": 83.3,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200630"
+      "latest_update": "20260713202321"
     },
     {
       "station_id": "PI710744",
@@ -1653,15 +1653,15 @@
       "lat": "37.53935",
       "lng": "126.871262",
       "total_count": 6,
-      "available_count": 3,
-      "total_percent": 50.0,
+      "available_count": 2,
+      "total_percent": 33.3,
       "slow_total": 6,
-      "slow_avail": 3,
-      "slow_percent": 50.0,
+      "slow_avail": 2,
+      "slow_percent": 33.3,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713183520"
+      "latest_update": "20260713201523"
     },
     {
       "station_id": "PI767542",
@@ -1738,15 +1738,15 @@
       "lat": "37.508559",
       "lng": "126.8374098",
       "total_count": 6,
-      "available_count": 4,
-      "total_percent": 66.7,
+      "available_count": 5,
+      "total_percent": 83.3,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 6,
-      "fast_avail": 4,
-      "fast_percent": 66.7,
-      "latest_update": "20260713200104"
+      "fast_avail": 5,
+      "fast_percent": 83.3,
+      "latest_update": "20260713202014"
     },
     {
       "station_id": "PL031737",
@@ -1797,7 +1797,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713193821"
+      "latest_update": "20260713202121"
     },
     {
       "station_id": "ST114705",
@@ -1823,15 +1823,15 @@
       "lat": "37.536213",
       "lng": "126.8305956",
       "total_count": 6,
-      "available_count": 4,
-      "total_percent": 66.7,
+      "available_count": 3,
+      "total_percent": 50.0,
       "slow_total": 4,
-      "slow_avail": 2,
-      "slow_percent": 50.0,
+      "slow_avail": 1,
+      "slow_percent": 25.0,
       "fast_total": 2,
       "fast_avail": 2,
       "fast_percent": 100.0,
-      "latest_update": "20260713193103"
+      "latest_update": "20260713200956"
     },
     {
       "station_id": "CV004159",
@@ -1840,15 +1840,15 @@
       "lat": "37.525799",
       "lng": "126.838912",
       "total_count": 5,
-      "available_count": 4,
-      "total_percent": 80.0,
+      "available_count": 2,
+      "total_percent": 40.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 5,
-      "fast_avail": 4,
-      "fast_percent": 80.0,
-      "latest_update": "20260713200053"
+      "fast_avail": 2,
+      "fast_percent": 40.0,
+      "latest_update": "20260713201550"
     },
     {
       "station_id": "EV003856",
@@ -2078,15 +2078,15 @@
       "lat": "37.5251639",
       "lng": "126.8748542",
       "total_count": 5,
-      "available_count": 2,
-      "total_percent": 40.0,
+      "available_count": 3,
+      "total_percent": 60.0,
       "slow_total": 5,
-      "slow_avail": 2,
-      "slow_percent": 40.0,
+      "slow_avail": 3,
+      "slow_percent": 60.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200409"
+      "latest_update": "20260713202110"
     },
     {
       "station_id": "KL001980",
@@ -2265,15 +2265,15 @@
       "lat": "37.513351057",
       "lng": "126.82935747",
       "total_count": 5,
-      "available_count": 5,
-      "total_percent": 100.0,
+      "available_count": 4,
+      "total_percent": 80.0,
       "slow_total": 5,
-      "slow_avail": 5,
-      "slow_percent": 100.0,
+      "slow_avail": 4,
+      "slow_percent": 80.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713144624"
+      "latest_update": "20260713201913"
     },
     {
       "station_id": "PW012717",
@@ -2299,15 +2299,15 @@
       "lat": "37.545589166",
       "lng": "126.86558838",
       "total_count": 5,
-      "available_count": 5,
-      "total_percent": 100.0,
+      "available_count": 4,
+      "total_percent": 80.0,
       "slow_total": 5,
-      "slow_avail": 5,
-      "slow_percent": 100.0,
+      "slow_avail": 4,
+      "slow_percent": 80.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713195811"
+      "latest_update": "20260713201411"
     },
     {
       "station_id": "PW013727",
@@ -2571,15 +2571,15 @@
       "lat": "37.5094543",
       "lng": "126.8621623",
       "total_count": 4,
-      "available_count": 2,
-      "total_percent": 50.0,
+      "available_count": 1,
+      "total_percent": 25.0,
       "slow_total": 4,
-      "slow_avail": 2,
-      "slow_percent": 50.0,
+      "slow_avail": 1,
+      "slow_percent": 25.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713183559"
+      "latest_update": "20260713201106"
     },
     {
       "station_id": "EV015467",
@@ -2809,15 +2809,15 @@
       "lat": "37.524799",
       "lng": "126.837655",
       "total_count": 4,
-      "available_count": 4,
-      "total_percent": 100.0,
+      "available_count": 3,
+      "total_percent": 75.0,
       "slow_total": 4,
-      "slow_avail": 4,
-      "slow_percent": 100.0,
+      "slow_avail": 3,
+      "slow_percent": 75.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713124323"
+      "latest_update": "20260713200947"
     },
     {
       "station_id": "LU002541",
@@ -2928,15 +2928,15 @@
       "lat": "37.5335793",
       "lng": "126.8690813",
       "total_count": 4,
-      "available_count": 4,
-      "total_percent": 100.0,
+      "available_count": 3,
+      "total_percent": 75.0,
       "slow_total": 4,
-      "slow_avail": 4,
-      "slow_percent": 100.0,
+      "slow_avail": 3,
+      "slow_percent": 75.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713135837"
+      "latest_update": "20260713201215"
     },
     {
       "station_id": "NT101950",
@@ -3217,15 +3217,15 @@
       "lat": "37.532714103",
       "lng": "126.82859810",
       "total_count": 4,
-      "available_count": 3,
-      "total_percent": 75.0,
+      "available_count": 4,
+      "total_percent": 100.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 4,
-      "fast_avail": 3,
-      "fast_percent": 75.0,
-      "latest_update": "20260713193100"
+      "fast_avail": 4,
+      "fast_percent": 100.0,
+      "latest_update": "20260713200953"
     },
     {
       "station_id": "TS114701",
@@ -3710,15 +3710,15 @@
       "lat": "37.5163082",
       "lng": "126.8541785",
       "total_count": 3,
-      "available_count": 2,
-      "total_percent": 66.7,
+      "available_count": 3,
+      "total_percent": 100.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 3,
-      "fast_avail": 2,
-      "fast_percent": 66.7,
-      "latest_update": "20260713194144"
+      "fast_avail": 3,
+      "fast_percent": 100.0,
+      "latest_update": "20260713202139"
     },
     {
       "station_id": "KP000700",
@@ -3922,7 +3922,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713200005"
+      "latest_update": "20260713202010"
     },
     {
       "station_id": "NT101781",
@@ -4458,15 +4458,15 @@
       "lat": "37.5167683",
       "lng": "126.8635626",
       "total_count": 2,
-      "available_count": 2,
-      "total_percent": 100.0,
+      "available_count": 1,
+      "total_percent": 50.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 2,
-      "fast_avail": 2,
-      "fast_percent": 100.0,
-      "latest_update": "20260713200807"
+      "fast_avail": 1,
+      "fast_percent": 50.0,
+      "latest_update": "20260713202204"
     },
     {
       "station_id": "CI0I000B",
@@ -4662,15 +4662,15 @@
       "lat": "37.5181159",
       "lng": "126.8465051",
       "total_count": 2,
-      "available_count": 2,
-      "total_percent": 100.0,
+      "available_count": 1,
+      "total_percent": 50.0,
       "slow_total": 2,
-      "slow_avail": 2,
-      "slow_percent": 100.0,
+      "slow_avail": 1,
+      "slow_percent": 50.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713170300"
+      "latest_update": "20260713201900"
     },
     {
       "station_id": "EC007775",
@@ -5112,7 +5112,7 @@
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713165931"
+      "latest_update": "20260713201106"
     },
     {
       "station_id": "EV020441",
@@ -5478,15 +5478,15 @@
       "lat": "37.5229427348",
       "lng": "126.8701243493",
       "total_count": 2,
-      "available_count": 1,
-      "total_percent": 50.0,
+      "available_count": 2,
+      "total_percent": 100.0,
       "slow_total": 1,
       "slow_avail": 1,
       "slow_percent": 100.0,
       "fast_total": 1,
-      "fast_avail": 0,
-      "fast_percent": 0.0,
-      "latest_update": "20260713194006"
+      "fast_avail": 1,
+      "fast_percent": 100.0,
+      "latest_update": "20260713202019"
     },
     {
       "station_id": "KP002691",
@@ -6039,15 +6039,15 @@
       "lat": "37.511433358",
       "lng": "126.84151301",
       "total_count": 2,
-      "available_count": 1,
-      "total_percent": 50.0,
+      "available_count": 0,
+      "total_percent": 0.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 2,
-      "fast_avail": 1,
-      "fast_percent": 50.0,
-      "latest_update": "20260713193121"
+      "fast_avail": 0,
+      "fast_percent": 0.0,
+      "latest_update": "20260713201621"
     },
     {
       "station_id": "SF002894",
@@ -6175,15 +6175,15 @@
       "lat": "37.535040072",
       "lng": "126.82415001",
       "total_count": 2,
-      "available_count": 2,
-      "total_percent": 100.0,
+      "available_count": 1,
+      "total_percent": 50.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 2,
-      "fast_avail": 2,
-      "fast_percent": 100.0,
-      "latest_update": "20260713154757"
+      "fast_avail": 1,
+      "fast_percent": 50.0,
+      "latest_update": "20260713201155"
     },
     {
       "station_id": "ST600090",
@@ -6319,7 +6319,7 @@
       "fast_total": 1,
       "fast_avail": 1,
       "fast_percent": 100.0,
-      "latest_update": "20260713200800"
+      "latest_update": "20260713202203"
     },
     {
       "station_id": "CU200011",
@@ -7161,15 +7161,15 @@
       "lat": "37.52382442",
       "lng": "126.8565432",
       "total_count": 1,
-      "available_count": 0,
-      "total_percent": 0.0,
+      "available_count": 1,
+      "total_percent": 100.0,
       "slow_total": 1,
-      "slow_avail": 0,
-      "slow_percent": 0.0,
+      "slow_avail": 1,
+      "slow_percent": 100.0,
       "fast_total": 0,
       "fast_avail": 0,
       "fast_percent": 0.0,
-      "latest_update": "20260713173109"
+      "latest_update": "20260713202113"
     },
     {
       "station_id": "PI200346",
@@ -7535,15 +7535,15 @@
       "lat": "37.529538168",
       "lng": "126.83602311",
       "total_count": 1,
-      "available_count": 0,
-      "total_percent": 0.0,
+      "available_count": 1,
+      "total_percent": 100.0,
       "slow_total": 0,
       "slow_avail": 0,
       "slow_percent": 0.0,
       "fast_total": 1,
-      "fast_avail": 0,
-      "fast_percent": 0.0,
-      "latest_update": "20260713183821"
+      "fast_avail": 1,
+      "fast_percent": 100.0,
+      "latest_update": "20260713201321"
     },
     {
       "station_id": "SE000228",
@@ -7699,6 +7699,6 @@
       "latest_update": "20260713180012"
     }
   ],
-  "collected_at_kst": "2026-07-13T20:07:25.516697+09:00",
-  "collected_at_utc": "2026-07-13T11:07:25.516697+00:00"
+  "collected_at_kst": "2026-07-13T20:16:48.425896+09:00",
+  "collected_at_utc": "2026-07-13T11:16:48.425896+00:00"
 }
