@@ -17,6 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 
 MAX_WORKERS = 10
+MIN_PLAUSIBLE_GRAND_TOTAL = 1000  # 서울 전체 25개구 총 충전기 수의 안전 최소 기준선
 
 BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
@@ -212,7 +213,20 @@ def main():
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울시 25개구 수집 시작 (병렬 {MAX_WORKERS}) ===")
 
-    written_files = []
+    # 사전 점검: API가 실제로 응답하는지 구 하나로 먼저 확인 (네트워크 차단/키 오류를
+    # 25개 전체를 돌린 후에야 알아채는 것을 방지)
+    probe_gu, probe_zscode = SEOUL_DISTRICTS[0]
+    probe_items = fetch_district_items(probe_zscode, service_key)
+    if not probe_items:
+        print(
+            f"사전 점검 실패: {probe_gu} 조회 결과가 0건입니다. "
+            f"네트워크 허용 목록(apis.data.go.kr) 또는 EV_SERVICE_KEY 값을 확인하세요. "
+            f"커밋 없이 종료합니다.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    results = {}
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {
             executor.submit(analyze_district, gu_name, zscode, service_key): gu_name
@@ -225,17 +239,29 @@ def main():
             except Exception as e:
                 print(f"  {gu_name} 수집 실패: {e}", file=sys.stderr)
                 continue
+            results[gu_name] = result
+            print(f"- {gu_name} 완료 (가용률 {result['summary']['total_percent']}%, 총 {result['summary']['total_count']}대)")
 
-            result["collected_at_kst"] = now_kst.isoformat()
-            result["collected_at_utc"] = now_utc.isoformat()
+    grand_total = sum(r["summary"]["total_count"] for r in results.values())
+    if grand_total < MIN_PLAUSIBLE_GRAND_TOTAL:
+        print(
+            f"수집 결과가 비정상적으로 적습니다 (전체 {grand_total}대, 최소 기준 {MIN_PLAUSIBLE_GRAND_TOTAL}대). "
+            f"실제 가용률 하락이 아니라 수집 실패로 판단해 파일 저장/커밋을 건너뜁니다.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
-            gu_dir = os.path.join(repo_dir, OUTPUT_ROOT, gu_name)
-            os.makedirs(gu_dir, exist_ok=True)
-            file_path = os.path.join(gu_dir, f"{hour_label}.json")
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-            written_files.append(os.path.join(OUTPUT_ROOT, gu_name, f"{hour_label}.json"))
-            print(f"- {gu_name} 완료 (가용률 {result['summary']['total_percent']}%) -> {file_path}")
+    written_files = []
+    for gu_name, result in results.items():
+        result["collected_at_kst"] = now_kst.isoformat()
+        result["collected_at_utc"] = now_utc.isoformat()
+
+        gu_dir = os.path.join(repo_dir, OUTPUT_ROOT, gu_name)
+        os.makedirs(gu_dir, exist_ok=True)
+        file_path = os.path.join(gu_dir, f"{hour_label}.json")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        written_files.append(os.path.join(OUTPUT_ROOT, gu_name, f"{hour_label}.json"))
 
     if not written_files:
         print("저장된 파일이 없어 커밋을 건너뜁니다.", file=sys.stderr)
