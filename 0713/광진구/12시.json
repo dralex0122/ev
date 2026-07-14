@@ -1,0 +1,19 @@
+{
+  "district": "광진구",
+  "zscode": "11215",
+  "summary": {
+    "total_count": 0,
+    "available_count": 0,
+    "total_percent": 0.0,
+    "slow_total": 0,
+    "slow_avail": 0,
+    "slow_percent": 0.0,
+    "fast_total": 0,
+    "fast_avail": 0,
+    "fast_percent": 0.0,
+    "station_count": 0
+  },
+  "stations": [],
+  "collected_at_kst": "2026-07-14T12:01:14.959873+09:00",
+  "collected_at_utc": "2026-07-14T03:01:14.959873+00:00"
+}
