@@ -14,7 +14,7 @@ import time
 
 BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
-OUTPUT_FILE = "metro7_ev_chargers.geojson"
+OUTPUT_FILE = "metro7_ev_chargers_new.geojson"
 FAST_THRESHOLD_KW = 50.0
 
 METRO_CITIES = [
@@ -74,7 +74,9 @@ def fetch_city_items(zcode, service_key):
             except Exception:
                 time.sleep(5)
 
-        if not page_success or not items or len(all_items) >= total_count:
+        if not page_success:
+            print(f"  경고: zcode={zcode} {page_no}페이지 수집 실패, 해당 페이지만 건너뜁니다.", file=sys.stderr)
+        elif not items or len(all_items) >= total_count:
             break
 
         page_no += 1
