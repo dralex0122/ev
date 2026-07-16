@@ -5,7 +5,7 @@
 24시간 동안 매시간 자동 수집해서 GitHub에 정리.
 
 ## 저장소
-https://github.com/dralex210-byte/ev (branch: main)
+https://github.com/dralex0122/ev (branch: main)
 
 ## 데이터 저장 구조
 ```
