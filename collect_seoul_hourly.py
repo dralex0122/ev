@@ -12,12 +12,16 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 
 MAX_WORKERS = 10
 MIN_PLAUSIBLE_GRAND_TOTAL = 1000  # 서울 전체 25개구 총 충전기 수의 안전 최소 기준선
+
+REQUEST_COUNT = 0  # 이번 실행에서 API에 실제로 보낸 요청 수(재시도 포함, 일일 트래픽 추적용)
+REQUEST_COUNT_LOCK = threading.Lock()
 
 BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
@@ -44,6 +48,7 @@ SEOUL_DISTRICTS = [
 def fetch_district_items(zscode, service_key):
     import requests
 
+    global REQUEST_COUNT
     page_no = 1
     all_items = []
 
@@ -64,6 +69,8 @@ def fetch_district_items(zscode, service_key):
 
         for attempt in range(1, 4):
             try:
+                with REQUEST_COUNT_LOCK:
+                    REQUEST_COUNT += 1
                 response = requests.get(full_url, timeout=60)
                 if response.status_code == 200:
                     data = response.json()
@@ -221,7 +228,7 @@ def main():
         print(
             f"사전 점검 실패: {probe_gu} 조회 결과가 0건입니다. "
             f"네트워크 허용 목록(apis.data.go.kr) 또는 EV_SERVICE_KEY 값을 확인하세요. "
-            f"커밋 없이 종료합니다.",
+            f"커밋 없이 종료합니다. (API 요청 {REQUEST_COUNT}건 소모)",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -246,7 +253,8 @@ def main():
     if grand_total < MIN_PLAUSIBLE_GRAND_TOTAL:
         print(
             f"수집 결과가 비정상적으로 적습니다 (전체 {grand_total}대, 최소 기준 {MIN_PLAUSIBLE_GRAND_TOTAL}대). "
-            f"실제 가용률 하락이 아니라 수집 실패로 판단해 파일 저장/커밋을 건너뜁니다.",
+            f"실제 가용률 하락이 아니라 수집 실패로 판단해 파일 저장/커밋을 건너뜁니다. "
+            f"(API 요청 {REQUEST_COUNT}건 소모)",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -268,14 +276,18 @@ def main():
         sys.exit(1)
 
     run(["git", "add", OUTPUT_ROOT], repo_dir)
-    commit = run(["git", "commit", "-m", f"Seoul EV charger availability: {now_kst.strftime('%Y-%m-%d %H:%M')} KST"], repo_dir)
+    commit_msg = (
+        f"Seoul EV charger availability: {now_kst.strftime('%Y-%m-%d %H:%M')} KST "
+        f"(API 요청 {REQUEST_COUNT}건)"
+    )
+    commit = run(["git", "commit", "-m", commit_msg], repo_dir)
     print(commit.stdout, commit.stderr)
     push = run(["git", "push", "origin", "main"], repo_dir)
     print(push.stdout, push.stderr)
     if push.returncode != 0:
         sys.exit(1)
 
-    print(f"=== 완료: {len(written_files)}개 구 데이터 커밋 & push ===")
+    print(f"=== 완료: {len(written_files)}개 구 데이터 커밋 & push (API 요청 {REQUEST_COUNT}건) ===")
 
 
 if __name__ == "__main__":
