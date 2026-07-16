@@ -1,0 +1,5 @@
+# 데이터 산출물은 서버에만 두고 GitHub엔 코드(.py)만 올림
+*.geojson
+0713/
+__pycache__/
+*.pyc
