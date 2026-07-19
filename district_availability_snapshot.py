@@ -91,11 +91,36 @@ def fetch_city_items(zcode, service_key):
     return all_items
 
 
+CITY_NAME_VARIANTS = {
+    "서울특별시", "서울", "부산광역시", "부산", "대구광역시", "대구",
+    "인천광역시", "인천", "광주광역시", "광주", "대전광역시", "대전",
+    "울산광역시", "울산",
+}
+
+# 확실히 아는 목록만 등재 (인천은 2025년 행정구역 개편 이후 최신 목록을 확신할 수 없어 생략)
+KNOWN_DISTRICTS = {
+    "서울특별시": {"종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구", "성북구",
+                 "강북구", "도봉구", "노원구", "은평구", "서대문구", "마포구", "양천구", "강서구",
+                 "구로구", "금천구", "영등포구", "동작구", "관악구", "서초구", "강남구", "송파구", "강동구"},
+    "부산광역시": {"중구", "서구", "동구", "영도구", "부산진구", "동래구", "남구", "북구",
+                 "해운대구", "사하구", "금정구", "강서구", "연제구", "수영구", "사상구", "기장군"},
+    "대구광역시": {"중구", "동구", "서구", "남구", "북구", "수성구", "달서구", "달성군", "군위군"},
+    "광주광역시": {"동구", "서구", "남구", "북구", "광산구"},
+    "대전광역시": {"동구", "중구", "서구", "유성구", "대덕구"},
+    "울산광역시": {"중구", "남구", "동구", "북구", "울주군"},
+}
+
+
 def extract_district(addr):
     parts = (addr or "").split()
-    if len(parts) < 2:
+    if not parts:
         return None
-    return parts[1]
+    if parts[0] in CITY_NAME_VARIANTS:
+        return parts[1] if len(parts) >= 2 else None
+    # 주소에 시/도 접두어가 없는 경우: 첫 단어가 이미 구/군/시로 끝나면 그대로 사용
+    if parts[0][-1] in ("구", "군", "시"):
+        return parts[0]
+    return parts[1] if len(parts) >= 2 else None
 
 
 def analyze_items(items):
@@ -202,6 +227,8 @@ def main():
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울+6대 광역시 구/군별 가용률 수집 시작 ===")
 
+    anomalies = []
+
     for city_name, zcode in CITIES:
         print(f"--- {city_name}(zcode={zcode}) 수집 중 ---")
         items = fetch_city_items(zcode, service_key)
@@ -218,17 +245,41 @@ def main():
         city_dir = os.path.join(OUTPUT_ROOT, city_name, hour_label)
         os.makedirs(city_dir, exist_ok=True)
 
+        known = KNOWN_DISTRICTS.get(city_name)
         for district, ditems in by_district.items():
             result = analyze_items(ditems)
             result["city"] = city_name
             result["district"] = district
             result["collected_at_kst"] = now_kst.isoformat()
             result["collected_at_utc"] = now_utc.isoformat()
+
+            reasons = []
+            if district[-1] not in ("구", "군", "시"):
+                reasons.append("구/군/시로 안 끝남 (주소 파싱 실패 가능성)")
+            if known is not None and district not in known:
+                reasons.append(f"{city_name}의 알려진 구/군 목록에 없음 (원본 주소 오류 가능성)")
+            if reasons:
+                sample = ditems[0]
+                anomalies.append({
+                    "city": city_name,
+                    "parsed_district": district,
+                    "reasons": reasons,
+                    "station_count": len(ditems),
+                    "sample_station_id": sample.get("statId"),
+                    "sample_name": sample.get("statNm"),
+                    "sample_addr": sample.get("addr"),
+                })
+
             file_path = os.path.join(city_dir, f"{district}.json")
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
 
         print(f"  {city_name}: {len(by_district)}개 구/군, 총 {len(items)}개 항목 (주소 파싱 실패 {skipped}건)")
+
+    anomalies_path = os.path.join(OUTPUT_ROOT, f"anomalies_{hour_label}.json")
+    with open(anomalies_path, "w", encoding="utf-8") as f:
+        json.dump(anomalies, f, ensure_ascii=False, indent=2)
+    print(f"=== 이상치 {len(anomalies)}건 -> {anomalies_path} ===")
 
     print(f"=== 완료: API 요청 {REQUEST_COUNT}건 ===")
 
