@@ -17,7 +17,6 @@ from datetime import datetime, timedelta, timezone
 
 BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
-OUTPUT_ROOT = "260719"
 FAST_THRESHOLD_KW = 50.0
 
 KST = timezone(timedelta(hours=9))
@@ -224,6 +223,7 @@ def main():
     now_utc = datetime.now(UTC)
     now_kst = now_utc.astimezone(KST)
     hour_label = now_kst.strftime("%H시")
+    output_root = now_kst.strftime("%y%m%d")
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울+6대 광역시 구/군별 가용률 수집 시작 ===")
 
@@ -242,7 +242,7 @@ def main():
             else:
                 skipped += 1
 
-        city_dir = os.path.join(OUTPUT_ROOT, city_name, hour_label)
+        city_dir = os.path.join(output_root, city_name, hour_label)
         os.makedirs(city_dir, exist_ok=True)
 
         known = KNOWN_DISTRICTS.get(city_name)
@@ -276,7 +276,7 @@ def main():
 
         print(f"  {city_name}: {len(by_district)}개 구/군, 총 {len(items)}개 항목 (주소 파싱 실패 {skipped}건)")
 
-    anomalies_path = os.path.join(OUTPUT_ROOT, f"anomalies_{hour_label}.json")
+    anomalies_path = os.path.join(output_root, f"anomalies_{hour_label}.json")
     with open(anomalies_path, "w", encoding="utf-8") as f:
         json.dump(anomalies, f, ensure_ascii=False, indent=2)
     print(f"=== 이상치 {len(anomalies)}건 -> {anomalies_path} ===")
