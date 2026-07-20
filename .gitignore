@@ -1,5 +1,8 @@
 # 데이터 산출물은 서버에만 두고 GitHub엔 코드(.py)만 올림
 *.geojson
+# 예외: 최신 충전소 위치+완속/고속 대수 데이터는 GitHub에도 올림
+!metropolitan_ev_stations.geojson
+!metro7_ev_chargers_new.geojson
 0713/
 __pycache__/
 *.pyc
