@@ -242,6 +242,11 @@ def main():
             else:
                 skipped += 1
 
+        if city_name == "전남광주통합특별시":
+            # zcode=12는 옛 전남 5개시+17개군까지 포함하는 통합 행정구역이라,
+            # 이 프로젝트에서 원래 다루던 광주 5개구만 남기고 나머지는 제외
+            by_district = {d: v for d, v in by_district.items() if d in KNOWN_DISTRICTS["전남광주통합특별시"]}
+
         city_dir = os.path.join(output_root, city_name, hour_label)
         os.makedirs(city_dir, exist_ok=True)
 
