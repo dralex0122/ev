@@ -115,6 +115,14 @@ DISTRICT_TYPO_FIXES = {
     "수영고": "수영구",
 }
 
+# 원본 API의 statId별 주소 필드 오류 수동 교정
+# (예: PI805029 "대전 서구 대전국화동성아파트"가 addr에는 엉뚱하게
+#  "경기도 파주시 와석순환로515번길 21"로 등록되어 있던 문제)
+ADDRESS_OVERRIDES = {
+    "PI805029": "대전 서구 둔산로 201",
+    "PI805196": "대전 서구 둔산북로 175",
+}
+
 
 def extract_district(addr):
     parts = (addr or "").split()
@@ -244,6 +252,10 @@ def main():
         by_district = defaultdict(list)
         skipped = 0
         for item in items:
+            override_addr = ADDRESS_OVERRIDES.get(item.get("statId"))
+            if override_addr:
+                item = dict(item)
+                item["addr"] = override_addr
             d = extract_district(item.get("addr", ""))
             if d:
                 by_district[d].append(item)
