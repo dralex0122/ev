@@ -112,6 +112,7 @@ def main():
 
     with open(INPUT_CSV, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
+        original_fieldnames = list(reader.fieldnames)
         rows = list(reader)
 
     verified_rows = []
@@ -124,7 +125,7 @@ def main():
         row["kw_detail"] = " | ".join(f"{sid}:{kws}" for sid, kws in zip(ids, kw_lists))
         verified_rows.append(row)
 
-    fieldnames = list(rows[0].keys()) + ["capacity_match", "kw_detail"]
+    fieldnames = original_fieldnames + ["capacity_match", "kw_detail"]
 
     def sort_key(r):
         strong = r["confidence"] == "다른 사업자(강한 의심)"
