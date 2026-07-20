@@ -89,7 +89,7 @@ def generate_geojson_for_metropolitan_areas(service_key, output_filename="metrop
         "26": "부산광역시",
         "27": "대구광역시",
         "28": "인천광역시",
-        "29": "광주광역시",
+        "12": "전남광주통합특별시",
         "30": "대전광역시",
         "31": "울산광역시"
     }
