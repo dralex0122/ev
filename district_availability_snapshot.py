@@ -110,16 +110,24 @@ KNOWN_DISTRICTS = {
 }
 
 
+# 원본 API 주소 필드의 알려진 오타 교정 (예: 부산 "수영고" -> "수영구")
+DISTRICT_TYPO_FIXES = {
+    "수영고": "수영구",
+}
+
+
 def extract_district(addr):
     parts = (addr or "").split()
     if not parts:
         return None
     if parts[0] in CITY_NAME_VARIANTS:
-        return parts[1] if len(parts) >= 2 else None
+        district = parts[1] if len(parts) >= 2 else None
     # 주소에 시/도 접두어가 없는 경우: 첫 단어가 이미 구/군/시로 끝나면 그대로 사용
-    if parts[0][-1] in ("구", "군", "시"):
-        return parts[0]
-    return parts[1] if len(parts) >= 2 else None
+    elif parts[0][-1] in ("구", "군", "시"):
+        district = parts[0]
+    else:
+        district = parts[1] if len(parts) >= 2 else None
+    return DISTRICT_TYPO_FIXES.get(district, district)
 
 
 def analyze_items(items):
