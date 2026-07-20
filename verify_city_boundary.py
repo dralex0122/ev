@@ -1,10 +1,12 @@
 """
-metro7_ev_chargers_new.geojson에서 city='서울특별시'로 라벨된 충전소의 좌표를
-VWorld 역지오코딩(좌표->행정구역)으로 실제 행정구역과 대조 검증.
+metro7_ev_chargers_new.geojson의 각 city 라벨에 대해, 실제 좌표를 VWorld
+역지오코딩(좌표->행정구역)으로 대조 검증. 서울부터 시작해서 7개 도시를 순서대로
+전부 처리.
 
-- 단순 사각형 범위 체크와 달리 실제 행정경계를 보므로, 서울 경계에 바짝 붙은
+- 단순 사각형 범위 체크와 달리 실제 행정경계를 보므로, 도시 경계에 바짝 붙은
   정상 주소(예: 강남구 세곡동)를 오탐하지 않음
 - 불일치 발견 시 좌표는 건드리지 않고 결과만 CSV로 남김 (삭제/수정 안 함)
+- 도시별로 별도 CSV 저장: boundary_check_<도시>.csv
 - VWorld 키는 VWORLD_API_KEY 환경변수에서 읽음
 """
 
@@ -16,8 +18,11 @@ import time
 
 VWORLD_URL = "http://api.vworld.kr/req/address"
 INPUT_GEOJSON = "metro7_ev_chargers_new.geojson"
-OUTPUT_CSV = "seoul_boundary_check.csv"
-TARGET_CITY = "서울특별시"
+
+CITIES = [
+    "서울특별시", "부산광역시", "대구광역시", "인천광역시",
+    "전남광주통합특별시", "대전광역시", "울산광역시",
+]
 
 
 def reverse_geocode(lng, lat, api_key):
@@ -47,15 +52,10 @@ def reverse_geocode(lng, lat, api_key):
     return None
 
 
-def main():
-    api_key = os.environ.get("VWORLD_API_KEY")
-    if not api_key:
-        print("VWORLD_API_KEY 환경변수가 설정되어 있지 않습니다.", file=sys.stderr)
-        sys.exit(1)
-
-    d = json.load(open(INPUT_GEOJSON, encoding="utf-8"))
-    targets = [f for f in d["features"] if f["properties"].get("city") == TARGET_CITY]
-    print(f"검증 대상: {len(targets)}개 ({TARGET_CITY})")
+def check_city(target_city, features, api_key):
+    targets = [f for f in features if f["properties"].get("city") == target_city]
+    print(f"=== {target_city}: 검증 대상 {len(targets)}개 ===")
+    sys.stdout.flush()
 
     mismatches = []
     checked = 0
@@ -68,28 +68,48 @@ def main():
         checked += 1
         if result is None:
             no_result += 1
-        elif result["level1"] != TARGET_CITY:
+        elif result["level1"] != target_city:
             mismatches.append({
                 "station_id": p["station_id"], "name": p.get("name", ""),
                 "address": p.get("address", ""), "lat": lat, "lng": lng,
                 "reverse_level1": result["level1"], "reverse_level2": result["level2"],
                 "reverse_text": result["text"],
             })
-            print(f"[{i}/{len(targets)}] 불일치: {p['station_id']} {p.get('name','')} -> {result['level1']} {result['level2']}")
+            print(f"[{target_city} {i}/{len(targets)}] 불일치: {p['station_id']} {p.get('name','')} -> {result['level1']} {result['level2']}")
 
         if i % 500 == 0:
-            print(f"[{i}/{len(targets)}] 진행 중... (불일치 {len(mismatches)}건 누적)")
+            print(f"[{target_city} {i}/{len(targets)}] 진행 중... (불일치 {len(mismatches)}건 누적)")
             sys.stdout.flush()
 
-        time.sleep(0.2)
+        time.sleep(0.1)
 
-    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as f:
+    output_csv = f"boundary_check_{target_city}.csv"
+    with open(output_csv, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.DictWriter(f, fieldnames=["station_id", "name", "address", "lat", "lng", "reverse_level1", "reverse_level2", "reverse_text"])
         w.writeheader()
         w.writerows(mismatches)
 
-    print(f"\n=== 완료: {checked}개 확인, 응답 없음 {no_result}건, 불일치 {len(mismatches)}건 ===")
-    print(f"결과 -> {OUTPUT_CSV}")
+    print(f"=== {target_city} 완료: {checked}개 확인, 응답 없음 {no_result}건, 불일치 {len(mismatches)}건 -> {output_csv} ===\n")
+    sys.stdout.flush()
+    return checked, len(mismatches)
+
+
+def main():
+    api_key = os.environ.get("VWORLD_API_KEY")
+    if not api_key:
+        print("VWORLD_API_KEY 환경변수가 설정되어 있지 않습니다.", file=sys.stderr)
+        sys.exit(1)
+
+    d = json.load(open(INPUT_GEOJSON, encoding="utf-8"))
+    features = d["features"]
+
+    total_checked = total_mismatch = 0
+    for city in CITIES:
+        checked, mismatch = check_city(city, features, api_key)
+        total_checked += checked
+        total_mismatch += mismatch
+
+    print(f"\n=== 전체 완료: {total_checked}개 확인, 총 불일치 {total_mismatch}건 ===")
 
 
 if __name__ == "__main__":
