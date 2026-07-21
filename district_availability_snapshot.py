@@ -123,6 +123,15 @@ ADDRESS_OVERRIDES = {
     "PI805196": "대전 서구 둔산북로 175",
 }
 
+# 역지오코딩으로 실제 위치가 경기도(7개 도시 프로젝트 범위 밖)로 확인된 statId 제외
+# (예: KP003057 "고양동 제1 공영주차장"은 addr에 "서울특별시 구로구"로 등록돼 있지만
+#  이름과 좌표 모두 실제 고양시 소재를 가리킴; LU000359 "국가기록원 나라기록관"은
+#  addr에 "서울특별시 용산구"로 등록돼 있지만 실제로는 성남시 소재)
+EXCLUDED_STATION_IDS = {
+    "KP003057",
+    "LU000359",
+}
+
 
 def extract_district(addr):
     parts = (addr or "").split()
@@ -252,6 +261,8 @@ def main():
         by_district = defaultdict(list)
         skipped = 0
         for item in items:
+            if item.get("statId") in EXCLUDED_STATION_IDS:
+                continue
             override_addr = ADDRESS_OVERRIDES.get(item.get("statId"))
             if override_addr:
                 item = dict(item)
