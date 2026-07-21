@@ -24,18 +24,16 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def check_date(date_folder):
     total_found = 0
     total_expected = 0
-    missing_hours = []
+    bad_hours_by_city = {city_name: [] for city_name, _ in CITIES}
+    anomalies_missing_hours = []
 
     for hour in range(24):
         hour_label = f"{hour:02d}시"
-        hour_ok = True
-        hour_detail = []
 
         for city_name, _ in CITIES:
             city_dir = os.path.join(BASE_DIR, date_folder, city_name, hour_label)
             if not os.path.isdir(city_dir):
-                hour_ok = False
-                hour_detail.append(f"{city_name}: 폴더 없음")
+                bad_hours_by_city[city_name].append(hour_label)
                 continue
 
             files = [f for f in os.listdir(city_dir) if f.endswith(".json")]
@@ -45,20 +43,16 @@ def check_date(date_folder):
             if expected is not None:
                 total_expected += expected
                 if len(files) < expected:
-                    hour_ok = False
-                    hour_detail.append(f"{city_name}: {len(files)}/{expected}개")
+                    bad_hours_by_city[city_name].append(hour_label)
             else:
                 total_expected += len(files)
 
         anomalies_path = os.path.join(BASE_DIR, date_folder, f"anomalies_{hour_label}.json")
         if not os.path.isfile(anomalies_path):
-            hour_ok = False
-            hour_detail.append("anomalies 파일 없음")
+            anomalies_missing_hours.append(hour_label)
 
-        if not hour_ok:
-            missing_hours.append((hour_label, hour_detail))
-
-    return total_expected, total_found, missing_hours
+    bad_hours_by_city = {c: h for c, h in bad_hours_by_city.items() if h}
+    return total_expected, total_found, bad_hours_by_city, anomalies_missing_hours
 
 
 def send_email(subject, body):
@@ -88,20 +82,20 @@ def main():
     date_folder = yesterday.strftime("%y%m%d")
     date_str = yesterday.strftime("%Y-%m-%d")
 
-    total_expected, total_found, missing_hours = check_date(date_folder)
+    total_expected, total_found, bad_hours_by_city, anomalies_missing_hours = check_date(date_folder)
 
-    if not missing_hours:
-        subject = f"[EV충전소] {date_str} 가용률 수집 정상 완료"
-        body = (
-            f"{date_str} 00시~23시, 7개 도시 전체 정상 수집 확인됐습니다.\n\n"
-            f"총 수집 파일 수: {total_found}개 (기대치 {total_expected}개)"
-        )
+    if not bad_hours_by_city and not anomalies_missing_hours:
+        subject = f"[EV충전소] {date_str} 가용률 수집"
+        body = "이상 없습니다."
     else:
-        subject = f"[EV충전소] {date_str} 가용률 수집 이상 발견 ({len(missing_hours)}개 시간대)"
-        lines = [f"{date_str} 수집 점검 결과 문제가 발견됐습니다.\n"]
-        for hour_label, detail in missing_hours:
-            lines.append(f"- {hour_label}: {', '.join(detail)}")
-        lines.append(f"\n총 수집 파일 수: {total_found}개 (기대치 {total_expected}개)")
+        subject = f"[EV충전소] {date_str} 가용률 수집 이상 발견"
+        lines = []
+        for city_name, _ in CITIES:
+            hours = bad_hours_by_city.get(city_name)
+            if hours:
+                lines.append(f"{city_name}: {', '.join(hours)} 이상")
+        if anomalies_missing_hours:
+            lines.append(f"anomalies 파일 없음: {', '.join(anomalies_missing_hours)}")
         body = "\n".join(lines)
 
     print(subject)
