@@ -257,7 +257,7 @@ def main():
 
     now_utc = datetime.now(UTC)
     now_kst = now_utc.astimezone(KST)
-    hour_label = now_kst.strftime("%H시")
+    hour_label = now_kst.strftime("%H시%M분")
     output_root = now_kst.strftime("%y%m%d")
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울+6대 광역시 구/군별 가용률 수집 시작 ===")
