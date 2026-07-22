@@ -75,9 +75,9 @@ def check_anomalies_file(date_folder, hour):
     legacy_path = os.path.join(BASE_DIR, date_folder, f"anomalies_{hour_label}.json")
     if os.path.isfile(legacy_path):
         return True
-    hour_dir = os.path.join(BASE_DIR, date_folder, hour_label)
+    anomalies_dir = os.path.join(BASE_DIR, date_folder, "anomalies")
     return all(
-        os.path.isfile(os.path.join(hour_dir, f"anomalies_{m:02d}분.json"))
+        os.path.isfile(os.path.join(anomalies_dir, f"anomalies_{hour_label}{m:02d}분.json"))
         for m in MINUTE_SLOTS
     )
 

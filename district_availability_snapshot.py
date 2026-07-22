@@ -323,9 +323,9 @@ def main():
 
         print(f"  {city_name}: {len(by_district)}개 구/군, 총 {len(items)}개 항목 (주소 파싱 실패 {skipped}건)")
 
-    anomalies_dir = os.path.join(output_root, hour_label)
+    anomalies_dir = os.path.join(output_root, "anomalies")
     os.makedirs(anomalies_dir, exist_ok=True)
-    anomalies_path = os.path.join(anomalies_dir, f"anomalies_{minute_label}.json")
+    anomalies_path = os.path.join(anomalies_dir, f"anomalies_{hour_label}{minute_label}.json")
     with open(anomalies_path, "w", encoding="utf-8") as f:
         json.dump(anomalies, f, ensure_ascii=False, indent=2)
     print(f"=== 이상치 {len(anomalies)}건 -> {anomalies_path} ===")
