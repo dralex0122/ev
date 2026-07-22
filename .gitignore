@@ -4,5 +4,7 @@
 !metropolitan_ev_stations.geojson
 !metro7_ev_chargers_new.geojson
 0713/
+# 날짜 폴더(YYMMDD, 예: 260722/)로 저장되는 시간대별 수집 산출물은 서버/NAS에만 둠
+[0-9][0-9][0-9][0-9][0-9][0-9]/
 __pycache__/
 *.pyc
