@@ -257,7 +257,8 @@ def main():
 
     now_utc = datetime.now(UTC)
     now_kst = now_utc.astimezone(KST)
-    hour_label = now_kst.strftime("%H시%M분")
+    hour_label = now_kst.strftime("%H시")
+    minute_label = now_kst.strftime("%M분")
     output_root = now_kst.strftime("%y%m%d")
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울+6대 광역시 구/군별 가용률 수집 시작 ===")
@@ -288,7 +289,7 @@ def main():
             # 이 프로젝트에서 원래 다루던 광주 5개구만 남기고 나머지는 제외
             by_district = {d: v for d, v in by_district.items() if d in KNOWN_DISTRICTS["전남광주통합특별시"]}
 
-        city_dir = os.path.join(output_root, city_name, hour_label)
+        city_dir = os.path.join(output_root, city_name, hour_label, minute_label)
         os.makedirs(city_dir, exist_ok=True)
 
         known = KNOWN_DISTRICTS.get(city_name)
@@ -322,7 +323,9 @@ def main():
 
         print(f"  {city_name}: {len(by_district)}개 구/군, 총 {len(items)}개 항목 (주소 파싱 실패 {skipped}건)")
 
-    anomalies_path = os.path.join(output_root, f"anomalies_{hour_label}.json")
+    anomalies_dir = os.path.join(output_root, hour_label)
+    os.makedirs(anomalies_dir, exist_ok=True)
+    anomalies_path = os.path.join(anomalies_dir, f"anomalies_{minute_label}.json")
     with open(anomalies_path, "w", encoding="utf-8") as f:
         json.dump(anomalies, f, ensure_ascii=False, indent=2)
     print(f"=== 이상치 {len(anomalies)}건 -> {anomalies_path} ===")

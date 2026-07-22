@@ -34,8 +34,9 @@ def next_run_time(now):
     return base
 
 
-def upload_hour_to_nas(date_folder, hour_label):
-    """<date_folder>/<도시>/<hour_label>/*.json 과 anomalies_<hour_label>.json 을 NAS로 업로드."""
+def upload_hour_to_nas(date_folder, hour_label, minute_label):
+    """<date_folder>/<도시>/<hour_label>/<minute_label>/*.json 과
+    <date_folder>/<hour_label>/anomalies_<minute_label>.json 을 NAS로 업로드."""
     nas_password = os.environ.get("NAS_PASSWORD")
     if not nas_password:
         print("  NAS_PASSWORD 환경변수가 없어 NAS 업로드를 건너뜁니다.", file=sys.stderr)
@@ -46,28 +47,29 @@ def upload_hour_to_nas(date_folder, hour_label):
         print(f"  {local_root} 없음, NAS 업로드 건너뜀", file=sys.stderr)
         return
 
-    cmds = [f"cd {NAS_REMOTE_ROOT}", f"mkdir {date_folder}"]
+    cmds = [f"cd {NAS_REMOTE_ROOT}", f"mkdir {date_folder}", f"mkdir {date_folder}/{hour_label}"]
     found_any = False
 
     for city in sorted(os.listdir(local_root)):
-        hour_dir = os.path.join(local_root, city, hour_label)
-        if not os.path.isdir(hour_dir):
+        minute_dir = os.path.join(local_root, city, hour_label, minute_label)
+        if not os.path.isdir(minute_dir):
             continue
         cmds.append(f"mkdir {date_folder}/{city}")
         cmds.append(f"mkdir {date_folder}/{city}/{hour_label}")
-        for fn in sorted(os.listdir(hour_dir)):
-            local_path = os.path.join(hour_dir, fn)
-            remote_path = f"{date_folder}/{city}/{hour_label}/{fn}"
+        cmds.append(f"mkdir {date_folder}/{city}/{hour_label}/{minute_label}")
+        for fn in sorted(os.listdir(minute_dir)):
+            local_path = os.path.join(minute_dir, fn)
+            remote_path = f"{date_folder}/{city}/{hour_label}/{minute_label}/{fn}"
             cmds.append(f"put {local_path} {remote_path}")
             found_any = True
 
-    anomalies_path = os.path.join(local_root, f"anomalies_{hour_label}.json")
+    anomalies_path = os.path.join(local_root, hour_label, f"anomalies_{minute_label}.json")
     if os.path.isfile(anomalies_path):
-        cmds.append(f"put {anomalies_path} {date_folder}/anomalies_{hour_label}.json")
+        cmds.append(f"put {anomalies_path} {date_folder}/{hour_label}/anomalies_{minute_label}.json")
         found_any = True
 
     if not found_any:
-        print(f"  {hour_label} 관련 파일이 없어 NAS 업로드 건너뜀", file=sys.stderr)
+        print(f"  {hour_label}/{minute_label} 관련 파일이 없어 NAS 업로드 건너뜀", file=sys.stderr)
         return
 
     cmd_str = "; ".join(cmds)
@@ -80,7 +82,7 @@ def upload_hour_to_nas(date_folder, hour_label):
     if result.returncode != 0 or "NT_STATUS" in (result.stdout + result.stderr):
         print(f"  NAS 업로드 중 문제 발생:\n{result.stdout}\n{result.stderr}", file=sys.stderr)
     else:
-        print(f"  NAS 업로드 완료: {NAS_REMOTE_ROOT}/{date_folder}/*/{hour_label}/")
+        print(f"  NAS 업로드 완료: {NAS_REMOTE_ROOT}/{date_folder}/*/{hour_label}/{minute_label}/")
 
 
 def main():
@@ -106,7 +108,8 @@ def main():
 
         actual_run_time = datetime.now(KST)
         date_folder = actual_run_time.strftime("%y%m%d")
-        hour_label = actual_run_time.strftime("%H시%M분")
+        hour_label = actual_run_time.strftime("%H시")
+        minute_label = actual_run_time.strftime("%M분")
         print(f"[{run_no}] === {actual_run_time.strftime('%Y-%m-%d %H:%M')} KST 실행 ===")
         sys.stdout.flush()
         result = subprocess.run(["python3", "-u", "district_availability_snapshot.py"])
@@ -114,8 +117,8 @@ def main():
         sys.stdout.flush()
 
         if result.returncode == 0:
-            print(f"[{run_no}] NAS 업로드 시작: {date_folder}/{hour_label}")
-            upload_hour_to_nas(date_folder, hour_label)
+            print(f"[{run_no}] NAS 업로드 시작: {date_folder}/{hour_label}/{minute_label}")
+            upload_hour_to_nas(date_folder, hour_label, minute_label)
         else:
             print(f"[{run_no}] 수집 실패로 NAS 업로드 건너뜀", file=sys.stderr)
         sys.stdout.flush()

@@ -5,10 +5,11 @@
 - 도시별 기대 구/군 개수는 district_availability_snapshot.py의
   KNOWN_DISTRICTS를 그대로 가져와서 사용 (이중 관리 방지)
 - 인천광역시처럼 KNOWN_DISTRICTS에 없는 도시는 폴더 존재 여부만 확인
-- 2026-07-22부터 수집 간격이 1시간 -> 10분으로 바뀌면서 저장 폴더명도
-  "HH시" -> "HH시MM분"으로 바뀜. 두 형식이 섞인 날짜(전환일)도 정상 처리하도록
-  시간(hour) 하나당 "레거시 1개 폴더" 또는 "10분 단위 6개 폴더" 중 하나라도
-  완전하면 정상으로 판단
+- 2026-07-22부터 수집 간격이 1시간 -> 10분으로 바뀌면서 저장 구조도
+  "<도시>/HH시/*.json" -> "<도시>/HH시/MM분/*.json"(시간 폴더 아래 분 단위
+  하위 폴더)으로 바뀜. 두 형식이 섞인 날짜(전환일)도 정상 처리하도록,
+  HH시 폴더 밑에 json이 직접 있으면 레거시로, 없으면 10분 단위 6개
+  하위 폴더로 판단
 - Gmail SMTP(앱 비밀번호) 사용. EMAIL_FROM/EMAIL_TO/EMAIL_APP_PASSWORD
   환경변수에서 읽음 (하드코딩하지 않음)
 """
@@ -28,30 +29,33 @@ MINUTE_SLOTS = list(range(0, 60, 10))
 
 def check_hour(date_folder, hour):
     """해당 시간(0~23)에 대해 문제 있는 도시 목록과 파일 수를 반환.
-    레거시(시간당 1개 폴더) 방식과 10분 단위(시간당 6개 폴더) 방식을 모두 지원."""
-    legacy_label = f"{hour:02d}시"
-    minute_labels = [f"{hour:02d}시{m:02d}분" for m in MINUTE_SLOTS]
+    레거시(HH시 폴더에 json 직접) 방식과 신규(HH시/MM분 하위 폴더) 방식을 모두 지원."""
+    hour_label = f"{hour:02d}시"
+    minute_labels = [f"{m:02d}분" for m in MINUTE_SLOTS]
 
     bad_cities = []
     found = 0
     expected = 0
 
     for city_name, _ in CITIES:
-        city_base = os.path.join(BASE_DIR, date_folder, city_name)
         exp = len(KNOWN_DISTRICTS[city_name]) if city_name in KNOWN_DISTRICTS else None
-        legacy_dir = os.path.join(city_base, legacy_label)
+        hour_dir = os.path.join(BASE_DIR, date_folder, city_name, hour_label)
 
-        if os.path.isdir(legacy_dir):
-            files = [f for f in os.listdir(legacy_dir) if f.endswith(".json")]
-            found += len(files)
-            expected += exp if exp is not None else len(files)
-            if exp is not None and len(files) < exp:
+        if not os.path.isdir(hour_dir):
+            bad_cities.append(city_name)
+            continue
+
+        direct_files = [f for f in os.listdir(hour_dir) if f.endswith(".json")]
+        if direct_files:
+            found += len(direct_files)
+            expected += exp if exp is not None else len(direct_files)
+            if exp is not None and len(direct_files) < exp:
                 bad_cities.append(city_name)
             continue
 
         slot_ok = True
         for ml in minute_labels:
-            d = os.path.join(city_base, ml)
+            d = os.path.join(hour_dir, ml)
             if not os.path.isdir(d):
                 slot_ok = False
                 continue
@@ -67,12 +71,13 @@ def check_hour(date_folder, hour):
 
 
 def check_anomalies_file(date_folder, hour):
-    legacy_label = f"{hour:02d}시"
-    legacy_path = os.path.join(BASE_DIR, date_folder, f"anomalies_{legacy_label}.json")
+    hour_label = f"{hour:02d}시"
+    legacy_path = os.path.join(BASE_DIR, date_folder, f"anomalies_{hour_label}.json")
     if os.path.isfile(legacy_path):
         return True
+    hour_dir = os.path.join(BASE_DIR, date_folder, hour_label)
     return all(
-        os.path.isfile(os.path.join(BASE_DIR, date_folder, f"anomalies_{hour:02d}시{m:02d}분.json"))
+        os.path.isfile(os.path.join(hour_dir, f"anomalies_{m:02d}분.json"))
         for m in MINUTE_SLOTS
     )
 
