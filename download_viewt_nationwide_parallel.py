@@ -1,7 +1,8 @@
 """
 download_viewt_nationwide.py의 병렬 버전. 이미 받은 파일은 건너뛰고
-나머지를 동시에 여러 개(기본 5개) 요청해서 다운로드 속도를 높임.
-공공 서버라 너무 공격적으로 늘리지 않고 적당한 동시성(5)만 사용.
+나머지를 동시에 여러 개 요청해서 다운로드 속도를 높임.
+동시성 5는 경기/경북/경남 등 대용량 지역 요청이 겹치면서 타임아웃이
+누적되는 문제가 있어 2로 낮춤.
 """
 import csv
 import os
@@ -28,7 +29,7 @@ RRANKS = ["101", "102", "103", "104", "105", "106", "107", "108"]
 YEARS = [2021, 2022, 2023, 2024]
 
 OUT_DIR = "viewt_percentile_speed_nationwide"
-MAX_WORKERS = 5
+MAX_WORKERS = 2
 
 print_lock = threading.Lock()
 
