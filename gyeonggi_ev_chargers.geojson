@@ -38110,8 +38110,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          126.134876,
-          37.618113
+          127.13174403713637,
+          37.618457025201764
         ]
       },
       "properties": {
@@ -38127,7 +38127,11 @@
         "openinghour": "24시간 이용가능",
         "UseLimitation": "N",
         "parking_free": "N",
-        "note": ""
+        "note": "",
+        "boundary_review": {
+          "action": "FIX_COORD",
+          "reason": "사용자 발견 - 좌표 버그"
+        }
       }
     },
     {
@@ -116730,8 +116734,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          130.12,
-          34.0
+          126.75889017594429,
+          37.727484491282624
         ]
       },
       "properties": {
@@ -116747,7 +116751,11 @@
         "openinghour": "24시간 이용가능",
         "UseLimitation": "N",
         "parking_free": "N",
-        "note": ""
+        "note": "",
+        "boundary_review": {
+          "action": "FIX_COORD",
+          "reason": "사용자 발견 - 좌표가 한국 밖(제주/일본/북한 등)을 가리키던 버그"
+        }
       }
     },
     {
@@ -301709,14 +301717,14 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          125.0,
-          33.0
+          127.12745787187184,
+          37.20881220580806
         ]
       },
       "properties": {
         "station_id": "KL002684",
         "name": "무봉산휴양림",
-        "address": "경기도 화성시 동탄기흥로502번길 283",
+        "address": "경기도 화성시 동탄구 동탄순환대로24길 185",
         "city": "경기도",
         "zcode": "41",
         "slow_count": 0,
@@ -301727,7 +301735,12 @@
         "UseLimitation": "N",
         "parking_free": "Y",
         "note": "",
-        "geocoding_unresolved": true
+        "geocoding_unresolved": true,
+        "boundary_review": {
+          "action": "FIX_COORD",
+          "reason": "사용자 발견 - 좌표 버그"
+        },
+        "address_orig": "경기도 화성시 동탄기흥로502번길 283"
       }
     },
     {
@@ -321872,8 +321885,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          127.06772,
-          38.98209
+          127.06234387119694,
+          38.00735691787477
         ]
       },
       "properties": {
@@ -321889,7 +321902,11 @@
         "openinghour": "09:00~18:00",
         "UseLimitation": "N",
         "parking_free": "Y",
-        "note": ""
+        "note": "",
+        "boundary_review": {
+          "action": "FIX_COORD",
+          "reason": "사용자 발견 - 좌표가 한국 밖(제주/일본/북한 등)을 가리키던 버그"
+        }
       }
     },
     {
