@@ -3,6 +3,7 @@
 # 예외: 최신 충전소 위치+완속/고속 대수 데이터는 GitHub에도 올림
 !metropolitan_ev_stations.geojson
 !metro7_ev_chargers_new.geojson
+!gyeonggi_ev_chargers.geojson
 0713/
 # 날짜 폴더(YYMMDD, 예: 260722/)로 저장되는 시간대별 수집 산출물은 서버/NAS에만 둠
 [0-9][0-9][0-9][0-9][0-9][0-9]/
