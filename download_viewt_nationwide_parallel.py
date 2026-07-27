@@ -2,7 +2,8 @@
 download_viewt_nationwide.py의 병렬 버전. 이미 받은 파일은 건너뛰고
 나머지를 동시에 여러 개 요청해서 다운로드 속도를 높임.
 동시성 5는 경기/경북/경남 등 대용량 지역 요청이 겹치면서 타임아웃이
-누적되는 문제가 있어 2로 낮춤.
+누적되는 문제가 있어 2로 낮췄다가, 그래도 계속 타임아웃이 나서
+동시성 1(순차) + 타임아웃 1200초(20분)로 재조정.
 """
 import csv
 import os
@@ -29,7 +30,8 @@ RRANKS = ["101", "102", "103", "104", "105", "106", "107", "108"]
 YEARS = [2021, 2022, 2023, 2024]
 
 OUT_DIR = "viewt_percentile_speed_nationwide"
-MAX_WORKERS = 2
+MAX_WORKERS = 1
+REQUEST_TIMEOUT = 1200
 
 print_lock = threading.Lock()
 
@@ -50,7 +52,7 @@ def fetch(yyyymm, sido_code, week_code):
     )
     for attempt in range(3):
         try:
-            r = requests.post(BASE, data=data, headers=HEADERS, timeout=600)
+            r = requests.post(BASE, data=data, headers=HEADERS, timeout=REQUEST_TIMEOUT)
             if r.status_code == 200:
                 return r.json().get("item", [])
             log(f"  HTTP {r.status_code}, 재시도")
