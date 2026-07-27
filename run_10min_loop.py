@@ -81,7 +81,14 @@ def upload_hour_to_nas(date_folder, hour_label, minute_label):
         ["smbclient", NAS_SHARE, "-U", NAS_USER, "-c", cmd_str],
         env=env, capture_output=True, text=True,
     )
-    if result.returncode != 0 or "NT_STATUS" in (result.stdout + result.stderr):
+    # 이미 있는 날짜/도시/시간 폴더에 매번 mkdir을 다시 시도하다 보니
+    # NT_STATUS_OBJECT_NAME_COLLISION이 흔히 뜨는데, 이는 "이미 존재해서 못 만듦"일
+    # 뿐 실제 업로드 실패가 아니므로 무시. 그 외 다른 NT_STATUS 오류만 진짜 문제로 취급
+    real_error = result.returncode != 0 or any(
+        "NT_STATUS" in line and "NAME_COLLISION" not in line
+        for line in (result.stdout + result.stderr).splitlines()
+    )
+    if real_error:
         print(f"  NAS 업로드 중 문제 발생:\n{result.stdout}\n{result.stderr}", file=sys.stderr)
     else:
         print(f"  NAS 업로드 완료: {NAS_REMOTE_ROOT}/{date_folder}/*/{hour_label}/{minute_label}/")
