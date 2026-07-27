@@ -4,8 +4,8 @@ View-T 도로망(네트워크) 데이터 전국 자동 다운로드 (GeoServer W
 지역+연도만 다르면 되고 월/평일주말은 결과에 영향 없음 (2026-07-27 확인됨).
 17개 시도 x 2021~2024 = 68개 파일.
 
-파일명: <year>_<region>_sido_id_<code>.gpkg (내용은 GeoJSON, 확장자만
-사이트 다운로드 관례에 맞춰 .gpkg 사용)
+파일명: <year>_<region>_week_sido_id_<code>.gpkg (사용자 다운로드 파일명 형식과
+동일하게 맞춤; 내용은 GeoJSON, 확장자만 사이트 다운로드 관례에 맞춰 .gpkg 사용)
 """
 import json
 import os
@@ -61,7 +61,7 @@ def main():
         for region_name, sido_code in REGIONS.items():
             n += 1
             zone_id = sido_code.ljust(5, "0")
-            fname = f"{year}_{region_name}_sido_id_{zone_id}.gpkg"
+            fname = f"{year}_{region_name}_week_sido_id_{zone_id}.gpkg"
             path = os.path.join(OUT_DIR, fname)
             if os.path.exists(path):
                 print(f"[{n}/{total}] {fname} 이미 있음, 건너뜀")
