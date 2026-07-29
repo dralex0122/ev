@@ -206,7 +206,7 @@ def main():
         print("EV_SERVICE_KEY 환경변수가 설정되어 있지 않습니다.", file=sys.stderr)
         sys.exit(1)
 
-    repo_dir = os.path.dirname(os.path.abspath(__file__)) or "."
+    repo_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) or "."
 
     now_utc = datetime.now(UTC)
     now_hour_utc = now_utc.replace(minute=0, second=0, microsecond=0)
