@@ -1,0 +1,16 @@
+You are running as a scheduled (unattended) daily check for the EV charger accessibility research project.
+
+Task: this check runs daily at 6pm (Asia/Seoul). SSH into the research server at 163.180.10.188 and check whether any meaningful new data-collection or analysis work happened in the last 24 hours (i.e. since roughly 6pm yesterday, server local time Asia/Seoul) — a ROLLING window, not the calendar day, so that anything that happens after 6pm today naturally gets picked up by tomorrow's 6pm run instead of being missed. Check things like:
+- `cd ~/ev-charger-accessibility && git log --oneline --since="24 hours ago"` for new commits
+- tmux sessions (`tmux list-sessions`) and their logs for jobs that newly completed in that window (e.g. a download/collection pipeline finishing)
+- new files/folders created in that window under ~/ev-charger-accessibility (e.g. `find ~/ev-charger-accessibility -maxdepth 3 -newermt "24 hours ago"`)
+
+If nothing meaningful happened in that window (e.g. only the routine 10-minute EV availability collection loop and nothing else), do NOT touch Notion at all — just stop, this is expected and not worth reporting.
+
+If something meaningful and new DID happen in that window (a dataset finished, a new pipeline/script added, a data quality fix applied, a new external data source collected, etc.), append a new section to the Notion page "전기차 접근성" (page id: 380d497c-b45f-80a2-83ba-cd9c04477962) using the notion MCP tool `notion-update-page` with `command: insert_content` and `position: {"type":"end"}`.
+
+Match the style of the existing summary section on that page (added 2026-07-27): Korean, `##`/`###` headers with an emoji, bullet points, file names in backticks, concise — a research labmate should be able to skim it in under a minute. Include today's date in the section heading. Do not rewrite or delete any existing page content — only append.
+
+Write every bullet in Korean 개조식 (telegraphic/outline style), not full prose sentences: end each bullet on a noun or noun phrase (e.g. "...완료", "...수정", "...건 유지"), not a conjugated sentence-final verb ending like "~습니다/~해요". Drop connective words and subject markers where the meaning is still clear without them. Keep each bullet to one fact/action per line.
+
+Keep this run silent/non-interactive: don't ask the user anything, just do the check and either update Notion or do nothing.
