@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.join(REPO_ROOT, "availability_loops"))
 from district_availability_snapshot import CITIES, KNOWN_DISTRICTS
 
 KST = timezone(timedelta(hours=9))
-BASE_DIR = REPO_ROOT  # 수집 데이터(<날짜>/<도시>/...)는 daily_check/가 아니라 저장소 루트에 있음
+BASE_DIR = os.path.join(REPO_ROOT, "charger_accessibility")  # 수집 데이터(<날짜>/<도시>/...) 위치
 MINUTE_SLOTS = list(range(0, 60, 10))
 
 REASON_MISSING = "수집 자체가 안 됨 (폴더 없음 — 프로세스 재시작 등으로 스킵됐을 가능성)"

@@ -16,6 +16,7 @@ from datetime import datetime, timedelta, timezone
 
 KST = timezone(timedelta(hours=9))
 INTERVAL_MINUTES = 10
+SNAPSHOT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "district_availability_snapshot.py")
 
 WINDOW_END = datetime(2026, 8, 18, 23, 50, 0, tzinfo=KST)
 
@@ -42,7 +43,7 @@ def upload_hour_to_nas(date_folder, hour_label, minute_label):
         print("  NAS_PASSWORD 환경변수가 없어 NAS 업로드를 건너뜁니다.", file=sys.stderr)
         return
 
-    local_root = os.path.abspath(date_folder)
+    local_root = os.path.abspath(os.path.join("charger_accessibility", date_folder))
     if not os.path.isdir(local_root):
         print(f"  {local_root} 없음, NAS 업로드 건너뜀", file=sys.stderr)
         return
@@ -121,7 +122,7 @@ def main():
         minute_label = actual_run_time.strftime("%M분")
         print(f"[{run_no}] === {actual_run_time.strftime('%Y-%m-%d %H:%M')} KST 실행 ===")
         sys.stdout.flush()
-        result = subprocess.run(["python3", "-u", "district_availability_snapshot.py"])
+        result = subprocess.run(["python3", "-u", SNAPSHOT_SCRIPT])
         print(f"[{run_no}] 종료 코드: {result.returncode}")
         sys.stdout.flush()
 

@@ -259,7 +259,7 @@ def main():
     now_kst = now_utc.astimezone(KST)
     hour_label = now_kst.strftime("%H시")
     minute_label = now_kst.strftime("%M분")
-    output_root = now_kst.strftime("%y%m%d")
+    output_root = os.path.join("charger_accessibility", now_kst.strftime("%y%m%d"))
 
     print(f"=== {now_kst.strftime('%Y-%m-%d %H:%M')} KST 서울+6대 광역시 구/군별 가용률 수집 시작 ===")
 
