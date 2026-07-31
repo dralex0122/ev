@@ -29,6 +29,7 @@ daynight_model/*.csv
 viewt_outputs/*
 !viewt_outputs/*.py
 grid_stats/*
+!grid_stats/*.py
 logs/*
 boundary_check/*
 !boundary_check/*.py
