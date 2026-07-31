@@ -35,6 +35,7 @@ boundary_check/*
 !boundary_check/*.sh
 dedup_outputs/*
 grid_population/*
+!grid_population/*.py
 graph_years/*.log
 graph_years/*_log.txt
 *_log.txt
