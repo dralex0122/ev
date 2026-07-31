@@ -9,3 +9,32 @@
 [0-9][0-9][0-9][0-9][0-9][0-9]/
 __pycache__/
 *.pyc
+
+# 가상환경 (venv 통째로 딸려들어가서 VSCode git 변경사항 수천개로 폭증하는 문제 발생 -> 제외)
+venv/
+*/venv/
+
+# 도로망 그래프/원본 데이터 산출물 (대용량, NAS/서버에만 보관, 코드(.py)만 GitHub에 올림)
+*.graphml
+graph_years/output/
+graph_years/network_raw/
+graph_years/speed_raw/
+
+# 건축물대장 원본/지오코딩 데이터, 인구모델 조인 결과 (대용량 CSV, NAS/서버에만 보관)
+building_register/building_register_seoul/
+building_register/*.csv
+daynight_model/*.csv
+
+# 산출물/로그 폴더 (스크립트(.py/.sh)만 GitHub에 남기고 나머지 데이터/로그는 서버에만 보관)
+viewt_outputs/*
+!viewt_outputs/*.py
+grid_stats/*
+logs/*
+boundary_check/*
+!boundary_check/*.py
+!boundary_check/*.sh
+dedup_outputs/*
+grid_population/*
+graph_years/*.log
+graph_years/*_log.txt
+*_log.txt
