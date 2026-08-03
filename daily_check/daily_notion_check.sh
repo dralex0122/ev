@@ -16,8 +16,11 @@ export LOGNAME="$(id -un)"
 
 PROMPT="$(cat daily_notion_check_prompt.txt)"
 
+echo "=== $(date) 실행 시작 (prompt ${#PROMPT}자) ===" >> daily_notion_check.log
+
 /Users/jeongminwoo/.local/bin/claude -p "$PROMPT" \
   --allowedTools "Bash" "mcp__notion__notion-update-page" "mcp__notion__notion-search" "mcp__notion__notion-fetch" \
   >> daily_notion_check.log 2>&1
+CLAUDE_EXIT=$?
 
-echo "=== $(date) 실행 완료 ===" >> daily_notion_check.log
+echo "=== $(date) 실행 완료 (exit code ${CLAUDE_EXIT}) ===" >> daily_notion_check.log
