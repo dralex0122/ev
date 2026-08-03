@@ -15,9 +15,10 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-BASE_URL = "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
+BASE_URL = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 NUM_OF_ROWS = 500
 FAST_THRESHOLD_KW = 50.0
+MAX_CONSECUTIVE_PAGE_FAILURES = 5
 
 KST = timezone(timedelta(hours=9))
 UTC = timezone.utc
@@ -41,6 +42,7 @@ def fetch_city_items(zcode, service_key):
     global REQUEST_COUNT
     page_no = 1
     all_items = []
+    consecutive_failures = 0
 
     while True:
         full_url = (
@@ -59,7 +61,7 @@ def fetch_city_items(zcode, service_key):
         for attempt in range(1, 4):
             try:
                 REQUEST_COUNT += 1
-                response = requests.get(full_url, timeout=60)
+                response = requests.get(full_url, timeout=15)
                 if response.status_code == 200:
                     data = response.json()
                     items_dict = data.get("items", {})
@@ -80,9 +82,18 @@ def fetch_city_items(zcode, service_key):
                 time.sleep(5)
 
         if not page_success:
-            print(f"  경고: zcode={zcode} {page_no}페이지 수집 실패, 해당 페이지만 건너뜁니다.", file=sys.stderr)
-        elif not items or len(all_items) >= total_count:
-            break
+            consecutive_failures += 1
+            print(f"  경고: zcode={zcode} {page_no}페이지 수집 실패, 해당 페이지만 건너뜁니다. "
+                  f"(연속 실패 {consecutive_failures}/{MAX_CONSECUTIVE_PAGE_FAILURES})", file=sys.stderr)
+            if consecutive_failures >= MAX_CONSECUTIVE_PAGE_FAILURES:
+                print(f"  경고: zcode={zcode} 연속 {MAX_CONSECUTIVE_PAGE_FAILURES}페이지 실패로 "
+                      f"이 도시 수집을 중단합니다 (API 장애 추정, 지금까지 수집된 {len(all_items)}건만 반환).",
+                      file=sys.stderr)
+                break
+        else:
+            consecutive_failures = 0
+            if not items or len(all_items) >= total_count:
+                break
 
         page_no += 1
         time.sleep(0.3)
