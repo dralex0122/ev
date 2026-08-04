@@ -38,3 +38,6 @@ grid_population/*
 graph_years/*.log
 graph_years/*_log.txt
 *_log.txt
+# launchd 자체 stdout/stderr 로그 (실질 내용은 daily_notion_check.log에 별도로 쌓임)
+daily_check/launchd_stdout.log
+daily_check/launchd_stderr.log
