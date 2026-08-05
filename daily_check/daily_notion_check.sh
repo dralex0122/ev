@@ -16,8 +16,24 @@ export LOGNAME="$(id -un)"
 
 PROMPT="$(cat daily_notion_check_prompt.txt)"
 
+echo "=== $(date) 실행 시작 (prompt ${#PROMPT}자) ===" >> daily_notion_check.log
+
+# macOS엔 GNU timeout이 없어서 백그라운드 감시자로 하드 타임아웃(10분) 구현.
+# claude가 멈춰도(권한 분류기 hang 등) 무한정 매달려 빈 로그만 남기지 않도록 함.
 /Users/jeongminwoo/.local/bin/claude -p "$PROMPT" \
   --allowedTools "Bash" "mcp__notion__notion-update-page" "mcp__notion__notion-search" "mcp__notion__notion-fetch" \
-  >> daily_notion_check.log 2>&1
+  >> daily_notion_check.log 2>&1 &
+CLAUDE_PID=$!
 
-echo "=== $(date) 실행 완료 ===" >> daily_notion_check.log
+( sleep 600; kill -9 "$CLAUDE_PID" 2>/dev/null ) &
+WATCHER_PID=$!
+
+wait "$CLAUDE_PID"
+CLAUDE_EXIT=$?
+kill "$WATCHER_PID" 2>/dev/null
+
+if [ "$CLAUDE_EXIT" -eq 137 ]; then
+  echo "=== $(date) 실행 완료 (10분 타임아웃으로 강제 종료) ===" >> daily_notion_check.log
+else
+  echo "=== $(date) 실행 완료 (exit code ${CLAUDE_EXIT}) ===" >> daily_notion_check.log
+fi
