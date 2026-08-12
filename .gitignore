@@ -31,9 +31,6 @@ viewt_outputs/*
 grid_stats/*
 !grid_stats/*.py
 logs/*
-boundary_check/*
-!boundary_check/*.py
-!boundary_check/*.sh
 dedup_outputs/*
 grid_population/*
 !grid_population/*.py
@@ -48,3 +45,10 @@ daily_check/launchd_stderr.log
 g2sfca_run_all*.log
 chain_s2park.log
 building_register/*.log
+
+# EndNote 라이브러리 (로컬 Mac 전용, NAS/로컬에만 보관 - storage_policy_nas 참고)
+*.enl
+EndNote-EV.Data/
+EndNote_backup_*/
+*.ris
+.DS_Store
