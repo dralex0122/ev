@@ -3,8 +3,8 @@
 """
 import geopandas as gpd
 
-SRC = '/mnt/cowork/EV/집계구_2016/집계구.shp'
-OUT_CSV = '/mnt/cowork/EV/집계구_2016/oa_centroids_2016_wgs84.csv'
+SRC = '/mnt/cowork/EV/input/raw/집계구_2016/집계구.shp'
+OUT_CSV = '/mnt/cowork/EV/input/raw/집계구_2016/oa_centroids_2016_wgs84.csv'
 
 gdf = gpd.read_file(SRC, encoding='cp949')
 gdf = gdf.set_crs(epsg=5179, allow_override=True)

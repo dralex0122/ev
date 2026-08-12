@@ -10,8 +10,8 @@ import calendar
 import time
 import pandas as pd
 
-SRC_DIR = '/mnt/cowork/EV/서울시 생활인구/집계구_생활인구_원본(OA-14979)'
-OUT_CSV = '/mnt/cowork/EV/서울시 생활인구/집계구_생활인구_원본(OA-14979)/oa_population_periods_2021_2024.csv'
+SRC_DIR = '/mnt/cowork/EV/input/raw/서울시_생활인구/집계구_생활인구_원본(OA-14979)'
+OUT_CSV = '/mnt/cowork/EV/input/processed/서울시_생활인구/집계구_생활인구_원본(OA-14979)/oa_population_periods_2021_2024.csv'
 
 PERIODS = {
     '오전': {'07', '08'},

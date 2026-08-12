@@ -22,7 +22,7 @@ WINDOW_END = datetime(2026, 8, 18, 23, 50, 0, tzinfo=KST)
 
 NAS_SHARE = "//163.180.10.191/cowork"
 NAS_USER = "dralex01"
-NAS_REMOTE_ROOT = "EV/charger_accessibility"
+NAS_REMOTE_ROOT = "EV/input/raw/charger_accessibility"
 
 
 def next_run_time(now):

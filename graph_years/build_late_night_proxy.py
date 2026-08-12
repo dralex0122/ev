@@ -6,7 +6,7 @@ View-T 원본 데이터에 심야 시간대 자체가 없어(오전/낮/밤 6개
 import os
 import networkx as nx
 
-BASE = '/mnt/cowork/EV/도로망_그래프/서울_연도별_시간대통합'
+BASE = '/mnt/cowork/EV/input/processed/도로망_그래프/서울_연도별_시간대통합'
 YEARS = [2021, 2022, 2023, 2024]
 DAYTYPES = ['week', 'weekend']
 PERIODS = ['오전', '낮', '밤']

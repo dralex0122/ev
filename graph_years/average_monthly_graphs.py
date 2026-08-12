@@ -2,8 +2,8 @@ import os
 import time
 import networkx as nx
 
-SRC_BASE = "/mnt/cowork/EV/도로망_그래프/서울_연도별"
-OUT_BASE = "/mnt/cowork/EV/도로망_그래프/서울_연도별_월평균"
+SRC_BASE = "/mnt/cowork/EV/input/processed/도로망_그래프/서울_연도별"
+OUT_BASE = "/mnt/cowork/EV/input/processed/도로망_그래프/서울_연도별_월평균"
 
 YEARS = [2021, 2022, 2023, 2024]
 DAYTYPES = ["week", "weekend"]

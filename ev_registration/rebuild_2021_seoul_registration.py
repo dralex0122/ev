@@ -5,7 +5,7 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
 BASE = unicodedata.normalize(
-    "NFD", "/Volumes/cowork/EV/전기차 등록 현황/서울"
+    "NFD", "/Volumes/cowork/EV/input/raw/전기차_등록_현황/서울"
 )
 SRC = BASE + "/" + unicodedata.normalize("NFD", "15~21년 행정동별 연료별 자동차 등록현황.xlsx")
 REF = BASE + "/" + unicodedata.normalize(

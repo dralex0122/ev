@@ -15,8 +15,10 @@ Traber 2012, 독일)를 추적한 결과 원문 수치가 75:4였고 근거 불�
 2026-08-05 확인 결과 250m 격자는 2021~2022년 데이터가 없어 종단분석에 부적합했음.
 
 S1/S2 결과는 서로 다른 폴더에 저장되어 기존 S1 결과와 섞이지 않음:
-  S1 -> /mnt/cowork/EV/g2sfca/
-  S2 -> /mnt/cowork/EV/g2sfca_s2/
+  S1 -> /mnt/cowork/EV/output/g2sfca/
+  S2 -> /mnt/cowork/EV/output/g2sfca_s2/
+
+2026-08-12 NAS 재구성(input/output/reference/나머지)에 맞춰 경로 갱신.
 """
 import argparse
 import csv
@@ -33,17 +35,17 @@ from scipy.spatial import cKDTree
 BASE = os.path.expanduser("~/ev-charger-accessibility")
 NAS = "/mnt/cowork/EV"
 
-GRAPH_DIR = os.path.join(NAS, "도로망_그래프/서울_연도별_시간대통합")
-CHARGER_DIR = os.path.join(NAS, "yearly_snapshots")
-D1_FP = os.path.join(NAS, "서울시 생활인구/집계구_생활인구_원본(OA-14979)/d1_final_2021_2024.csv")
+GRAPH_DIR = os.path.join(NAS, "input/processed/도로망_그래프/서울_연도별_시간대통합")
+CHARGER_DIR = os.path.join(NAS, "input/processed/yearly_snapshots")
+D1_FP = os.path.join(NAS, "input/processed/서울시_생활인구/집계구_생활인구_원본(OA-14979)/d1_final_2021_2024.csv")
 
 WGS84_TO_5179 = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
 CUTOFF_SEC = 900  # 15분 (t0)
 
 OUT_DIRS = {
-    "s1": os.path.join(NAS, "g2sfca"),
-    "s2": os.path.join(NAS, "g2sfca_s2"),
-    "s2park": os.path.join(NAS, "g2sfca_s2_park10"),
+    "s1": os.path.join(NAS, "output/g2sfca"),
+    "s2": os.path.join(NAS, "output/g2sfca_s2"),
+    "s2park": os.path.join(NAS, "output/g2sfca_s2_park10"),
 }
 
 SUPPLY_FAST_RATIOS = {
