@@ -3,11 +3,20 @@ G2SFCA 실행 (집계구 기반, 파라미터화 버전)
 
 1. 충전소(공급) -> 집계구(수요) 이동시간 행렬 계산 (15분/900초 컷오프)
 2. G2SFCA 2단계 접근성 점수 계산 (임계값 컷오프 방식, t0=15분)
-   - 공급: 충전소 total_count (S1, 잠정 - S2 가중치는 미확정)
+   - 공급: S1(단순 total_count) 또는 S2(급속:완속 가중, --supply로 선택)
    - 수요: 집계구 시간대별 평균 생활인구 (D1, 2021~2024 확보, 오전/낮/밤/심야)
+
+S2 가중치(SUPPLY_S2_FAST_RATIO=2.4)는 서울 10분 가용률 루프 실측(2026-08-05,
+2026-08-10 재검증) 기반. 문헌값(12:1, Li et al. 2022 인용)은 원출처(Schroeder &
+Traber 2012, 독일)를 추적한 결과 원문 수치가 75:4였고 근거 불명으로 48:4로
+재조정된 값이라 provenance가 약함 - 2026-08-10 논의 후 실측값 채택.
 
 250m 인구격자 대신 집계구(2016년 경계, d1_final_2021_2024.csv)를 수요점으로 사용 -
 2026-08-05 확인 결과 250m 격자는 2021~2022년 데이터가 없어 종단분석에 부적합했음.
+
+S1/S2 결과는 서로 다른 폴더에 저장되어 기존 S1 결과와 섞이지 않음:
+  S1 -> /mnt/cowork/EV/g2sfca/
+  S2 -> /mnt/cowork/EV/g2sfca_s2/
 """
 import argparse
 import csv
@@ -31,7 +40,16 @@ D1_FP = os.path.join(NAS, "서울시 생활인구/집계구_생활인구_원본(
 WGS84_TO_5179 = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
 CUTOFF_SEC = 900  # 15분 (t0)
 
-OUT_DIR = os.path.join(NAS, "g2sfca")
+OUT_DIRS = {
+    "s1": os.path.join(NAS, "g2sfca"),
+    "s2": os.path.join(NAS, "g2sfca_s2"),
+    "s2park": os.path.join(NAS, "g2sfca_s2_park10"),
+}
+
+SUPPLY_FAST_RATIOS = {
+    "s2": 2.4,       # 서울 10분 루프 실측 기반(2026-08-10 재검증, 20일치)
+    "s2park": 10.0,  # Park et al.(2022) 문헌값 - 급속충전 속도가 10배 빠르다는 스펙 기반, 강건성 비교용
+}
 
 PERIOD_COL = {
     "오전": "오전_avg",
@@ -64,8 +82,17 @@ def load_chargers(year):
     return [f for f in data["features"] if f["properties"].get("city") == "서울특별시"]
 
 
-def main(year, daytype, period, scenario):
-    os.makedirs(OUT_DIR, exist_ok=True)
+def supply_value(props, supply_mode):
+    if supply_mode == "s1":
+        return props.get("total_count", 0)
+    fast = props.get("fast_count", 0) or 0
+    slow = props.get("slow_count", 0) or 0
+    return fast * SUPPLY_FAST_RATIOS[supply_mode] + slow * 1
+
+
+def main(year, daytype, period, scenario, supply="s1"):
+    out_dir = OUT_DIRS[supply]
+    os.makedirs(out_dir, exist_ok=True)
     t0 = time.time()
 
     graph_fp = os.path.join(GRAPH_DIR, str(year), f"seoul_{year}_{daytype}_{period}_{scenario}_연평균.graphml")
@@ -83,9 +110,10 @@ def main(year, daytype, period, scenario):
         _, idx = tree.query([x, y])
         return node_ids[idx]
 
-    # 충전소 로드 (S1: total_count, 잠정 - S2 가중치 미확정)
+    # 충전소 로드
     chargers = load_chargers(year)
-    print(f"충전소({year}, 서울): {len(chargers):,}개", flush=True)
+    ratio_note = f"(급속가중 {SUPPLY_FAST_RATIOS[supply]}배)" if supply in SUPPLY_FAST_RATIOS else ""
+    print(f"충전소({year}, 서울): {len(chargers):,}개, 공급 정의: {supply}" + ratio_note, flush=True)
 
     charger_info = {}
     for c in chargers:
@@ -95,7 +123,7 @@ def main(year, daytype, period, scenario):
         sid = c["properties"]["station_id"]
         charger_info[sid] = {
             "node": node,
-            "total_count": c["properties"].get("total_count", 0),
+            "supply": supply_value(c["properties"], supply),
             "lat": lat, "lon": lon,
         }
 
@@ -111,7 +139,7 @@ def main(year, daytype, period, scenario):
     # ---- 1) 이동시간 행렬 계산 ----
     t1 = time.time()
     tag = f"{year}_{daytype}_{period}_{scenario}"
-    od_fp = os.path.join(OUT_DIR, f"od_{tag}.csv")
+    od_fp = os.path.join(out_dir, f"od_{tag}.csv")
     total_pairs = 0
     catchment_by_station = {}
     with open(od_fp, "w", encoding="utf-8-sig", newline="") as f:
@@ -136,7 +164,7 @@ def main(year, daytype, period, scenario):
     # ---- 2) G2SFCA step 1: 공급 대비 비율 R_j ----
     R = {}
     for sid, pairs in catchment_by_station.items():
-        S_j = charger_info[sid]["total_count"]
+        S_j = charger_info[sid]["supply"]
         D_sum = sum(demand[oa_code]["value"] for oa_code, tt in pairs)
         R[sid] = S_j / D_sum if D_sum > 0 else 0.0
 
@@ -152,7 +180,7 @@ def main(year, daytype, period, scenario):
         A[oa_code] = sum(R[sid] for sid in stations)
 
     # ---- 저장 ----
-    score_fp = os.path.join(OUT_DIR, f"g2sfca_score_{tag}.csv")
+    score_fp = os.path.join(out_dir, f"g2sfca_score_{tag}.csv")
     with open(score_fp, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         w.writerow(["oa_code", "accessibility_score", "n_stations_in_catchment", "demand_value"])
@@ -185,5 +213,6 @@ if __name__ == "__main__":
     parser.add_argument("--daytype", default="week", choices=["week", "weekend"])
     parser.add_argument("--period", default="오전", choices=["오전", "낮", "밤", "심야"])
     parser.add_argument("--scenario", default="normal", choices=["normal", "congested", "freeflow"])
+    parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park"])
     args = parser.parse_args()
-    main(args.year, args.daytype, args.period, args.scenario)
+    main(args.year, args.daytype, args.period, args.scenario, args.supply)

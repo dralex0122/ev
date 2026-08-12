@@ -43,3 +43,8 @@ graph_years/*_log.txt
 # launchd 자체 stdout/stderr 로그 (실질 내용은 daily_notion_check.log에 별도로 쌓임)
 daily_check/launchd_stdout.log
 daily_check/launchd_stderr.log
+
+# G2SFCA 배치 실행 로그 (서버 보관, GitHub 미포함)
+g2sfca_run_all*.log
+chain_s2park.log
+building_register/*.log

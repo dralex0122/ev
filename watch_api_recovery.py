@@ -5,7 +5,7 @@ import requests
 
 key = os.environ.get("EV_SERVICE_KEY")
 url = (
-    "http://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
+    "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
     f"?serviceKey={key}&pageNo=1&numOfRows=5&zcode=11&dataType=JSON"
 )
 
