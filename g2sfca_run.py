@@ -19,10 +19,20 @@ S1/S2 결과는 서로 다른 폴더에 저장되어 기존 S1 결과와 섞이�
   S2 -> /mnt/cowork/EV/output/g2sfca_s2/
 
 2026-08-12 NAS 재구성(input/output/reference/나머지)에 맞춰 경로 갱신.
+
+2026-08-13 거리조락함수(--decay) 파라미터화 추가:
+  - binary(기본값, 기존 방식): t0=15분 이내면 가중치 1, 넘으면 0 - 기존 결과와 완전히 동일
+  - gaussian(신규): Luo & Qi(2009) E2SFCA 공식, 15분 이내에서도 가까울수록 더 큰 가중치.
+    교수님 논문(2번, Leveraging temporal changes...) 코드가 이 공식을 씀 - 우리는 그동안
+    이 논문에서 "15분"이라는 숫자만 가져오고 decay 함수 모양(Gaussian)은 검토 없이
+    binary로 단순화해서 썼음을 확인, 강건성 비교를 위해 추가.
+  - gaussian 결과는 별도 폴더(예: g2sfca_s2_gaussian/)에 저장되어 기존 binary 결과를
+    덮어쓰지 않음
 """
 import argparse
 import csv
 import json
+import math
 import os
 import time
 import unicodedata
@@ -42,11 +52,19 @@ D1_FP = os.path.join(NAS, "input/processed/서울시_생활인구/집계구_생�
 WGS84_TO_5179 = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
 CUTOFF_SEC = 900  # 15분 (t0)
 
-OUT_DIRS = {
-    "s1": os.path.join(NAS, "output/g2sfca"),
-    "s2": os.path.join(NAS, "output/g2sfca_s2"),
-    "s2park": os.path.join(NAS, "output/g2sfca_s2_park10"),
+OUT_DIR_BASENAMES = {
+    "s1": "g2sfca",
+    "s2": "g2sfca_s2",
+    "s2park": "g2sfca_s2_park10",
 }
+
+
+def out_dir_for(supply, decay):
+    """binary(기본)는 기존 경로 그대로, gaussian은 _gaussian 접미사 붙인 새 폴더."""
+    name = OUT_DIR_BASENAMES[supply]
+    if decay == "gaussian":
+        name += "_gaussian"
+    return os.path.join(NAS, "output", name)
 
 SUPPLY_FAST_RATIOS = {
     "s2": 2.4,       # 서울 10분 루프 실측 기반(2026-08-10 재검증, 20일치)
@@ -92,8 +110,19 @@ def supply_value(props, supply_mode):
     return fast * SUPPLY_FAST_RATIOS[supply_mode] + slow * 1
 
 
-def main(year, daytype, period, scenario, supply="s1"):
-    out_dir = OUT_DIRS[supply]
+def decay_weight(travel_time_sec, cutoff_sec, decay_mode):
+    """t0(cutoff_sec) 이내 거리조락 가중치. binary=문턱값 컷오프(기존),
+    gaussian=Luo&Qi(2009) E2SFCA 공식(교수님 논문 코드와 동일)."""
+    if travel_time_sec > cutoff_sec:
+        return 0.0
+    if decay_mode == "binary":
+        return 1.0
+    ratio = travel_time_sec / cutoff_sec
+    return (math.exp(-0.5 * ratio ** 2) - math.exp(-0.5)) / (1 - math.exp(-0.5))
+
+
+def main(year, daytype, period, scenario, supply="s1", decay="binary"):
+    out_dir = out_dir_for(supply, decay)
     os.makedirs(out_dir, exist_ok=True)
     t0 = time.time()
 
@@ -115,7 +144,7 @@ def main(year, daytype, period, scenario, supply="s1"):
     # 충전소 로드
     chargers = load_chargers(year)
     ratio_note = f"(급속가중 {SUPPLY_FAST_RATIOS[supply]}배)" if supply in SUPPLY_FAST_RATIOS else ""
-    print(f"충전소({year}, 서울): {len(chargers):,}개, 공급 정의: {supply}" + ratio_note, flush=True)
+    print(f"충전소({year}, 서울): {len(chargers):,}개, 공급 정의: {supply}" + ratio_note + f", 거리조락: {decay}", flush=True)
 
     charger_info = {}
     for c in chargers:
@@ -163,23 +192,23 @@ def main(year, daytype, period, scenario, supply="s1"):
     print(f"이동시간 행렬 계산 완료: {total_pairs:,}쌍, {od_time:.1f}초 -> {od_fp}", flush=True)
     print(f"  파일 크기: {os.path.getsize(od_fp)/1024/1024:.1f} MB", flush=True)
 
-    # ---- 2) G2SFCA step 1: 공급 대비 비율 R_j ----
+    # ---- 2) G2SFCA step 1: 공급 대비 비율 R_j (거리조락 가중치 적용) ----
     R = {}
     for sid, pairs in catchment_by_station.items():
         S_j = charger_info[sid]["supply"]
-        D_sum = sum(demand[oa_code]["value"] for oa_code, tt in pairs)
+        D_sum = sum(demand[oa_code]["value"] * decay_weight(tt, CUTOFF_SEC, decay) for oa_code, tt in pairs)
         R[sid] = S_j / D_sum if D_sum > 0 else 0.0
 
-    # ---- 3) G2SFCA step 2: 집계구별 접근성 A_i ----
+    # ---- 3) G2SFCA step 2: 집계구별 접근성 A_i (거리조락 가중치 적용) ----
     oa_catchment = {}
     for sid, pairs in catchment_by_station.items():
         for oa_code, tt in pairs:
-            oa_catchment.setdefault(oa_code, []).append(sid)
+            oa_catchment.setdefault(oa_code, []).append((sid, tt))
 
     A = {}
     for oa_code in demand:
         stations = oa_catchment.get(oa_code, [])
-        A[oa_code] = sum(R[sid] for sid in stations)
+        A[oa_code] = sum(R[sid] * decay_weight(tt, CUTOFF_SEC, decay) for sid, tt in stations)
 
     # ---- 저장 ----
     score_fp = os.path.join(out_dir, f"g2sfca_score_{tag}.csv")
@@ -216,5 +245,6 @@ if __name__ == "__main__":
     parser.add_argument("--period", default="오전", choices=["오전", "낮", "밤", "심야"])
     parser.add_argument("--scenario", default="normal", choices=["normal", "congested", "freeflow"])
     parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park"])
+    parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
     args = parser.parse_args()
-    main(args.year, args.daytype, args.period, args.scenario, args.supply)
+    main(args.year, args.daytype, args.period, args.scenario, args.supply, args.decay)

@@ -28,9 +28,9 @@ def build_combos():
     return combos
 
 
-def main(supply):
+def main(supply, decay="binary"):
     combos = build_combos()
-    print(f"총 {len(combos)}개 조합 실행 시작 (supply={supply})", flush=True)
+    print(f"총 {len(combos)}개 조합 실행 시작 (supply={supply}, decay={decay})", flush=True)
 
     t_start = time.time()
     failed = []
@@ -38,7 +38,7 @@ def main(supply):
         tag = f"{year}_{daytype}_{period}_{scenario}"
         print(f"\n===== [{i}/{len(combos)}] {tag} 시작 ({time.time()-t_start:.0f}초 경과) =====", flush=True)
         try:
-            g2sfca_run.main(year, daytype, period, scenario, supply)
+            g2sfca_run.main(year, daytype, period, scenario, supply, decay)
         except Exception:
             print(f"!!! {tag} 실패:", flush=True)
             traceback.print_exc()
@@ -53,5 +53,6 @@ def main(supply):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park"])
+    parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
     args = parser.parse_args()
-    main(args.supply)
+    main(args.supply, args.decay)
