@@ -33,6 +33,8 @@ v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채�
 - `availability_loops/run_24h_hourly.py` → `run_monthly_hourly.py` →
   `run_10min_loop.py` (24시간 1회성 → 1개월 시간 단위 → 10분 간격, 3세대.
   `run_10min_loop.py` 자체 docstring에 "run_monthly_hourly.py를 대체" 명시)
+- `chain_s2park.sh` — S2→s2park 배치 자동 연계용 일회성 스크립트, 2026-08-10 실행
+  완료 후 더 이상 쓰이지 않음(크론/tmux 어디에도 등록 안 됨 확인)
 
 **정정(2026-08-14)**: `daily_check/check_and_email.py`를 여기 올렸던 건 판단 착오였음 —
 당시 로컬 Mac의 crontab/launchd만 확인하고 **서버 crontab을 확인하지 않아서**, 매일
@@ -40,6 +42,18 @@ v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채�
 08-14 이틀간 이메일 발송 실패 — `daily_check/`로 원상복구함. 교훈: 스크립트가 정말
 안 쓰이는지 확인할 땐 로컬뿐 아니라 서버 crontab(`crontab -l`)도 반드시 같이 확인.
 
-## `STATUS.md`
-2026-07-14 최초 24시간 수집 작업의 진행 기록. 그 작업은 완료됐고, 이후 프로젝트
-전체 현황은 루트 `README.md`가 대체.
+## `initial_24h_test/`
+2026-07-14 최초 24시간 수집 작업 관련 일체 (연구 시작 직후 파일럿). 그 작업은
+완료됐고, 이후 프로젝트 전체 현황은 루트 `README.md`가 대체.
+- `STATUS.md` — 당시 진행 기록
+- `0713/` — 그 24시간 동안 수집된 원본 JSON(서울 25개 구, 시간대별) — **2026-08-14
+  정리 시점까지 실수로 GitHub에 그대로 커밋되어 있던 것 발견**(.gitignore 규칙은
+  나중에 추가되어 이미 추적 중이던 파일엔 적용 안 됐음), 코드 저장소엔 데이터를
+  안 올린다는 원칙에 맞게 이 위치로 정리
+- `view_report.ipynb` — 위 0713 JSON을 콘솔 리포트 형식으로 보는 뷰어, 그 데이터
+  전용이라 같이 이동
+
+## `7city_gyeonggi_scope/outputs/`
+7개도시+경기도 스코프 시절 최종 GeoJSON 산출물(충전소 위치+완속/고속 대수).
+`collection/`·`data_cleaning/`의 archive된 스크립트에서만 참조되고 현재 파이프라인
+(연도별 `yearly_snapshots/`)과는 무관해 함께 이동.
