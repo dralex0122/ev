@@ -36,9 +36,13 @@
   `district_availability_snapshot.py`가 서울+6대 광역시를 구/군 단위로 쪼개 가용률(전체/가용
   대수·비율, 완속/고속 구분) 계산, `run_10min_loop.py`가 스케줄링. 무한 재시도 방지용 상한
   (`MAX_CONSECUTIVE_PAGE_FAILURES=5`) 및 https 고정 적용됨
-- **`daily_check/`** — 매일 Notion 페이지에 지난 24시간 작업 마일스톤을 자동 정리
-  (`daily_notion_check.sh`, launchd `com.evcharger.dailynotioncheck` 등록, 로컬 Mac 실행 전제
-  — cron이 아닌 launchd인 이유는 Notion MCP OAuth가 로그인 키체인 접근을 필요로 해서)
+- **`daily_check/`** — 두 가지 독립된 일일 점검이 같이 있음
+  - `daily_notion_check.sh` — 매일 Notion 페이지에 지난 24시간 작업 마일스톤을 자동 정리
+    (launchd `com.evcharger.dailynotioncheck` 등록, 로컬 Mac 실행 전제 — cron이 아닌 launchd인
+    이유는 Notion MCP OAuth가 로그인 키체인 접근을 필요로 해서)
+  - `check_and_email.py` — 매일 09시 **서버** crontab으로 실행, 전날 수집 완료 여부 점검 후
+    이메일 발송(Gmail SMTP). 2026-08-12에 "안 쓰인다"고 잘못 판단해 archive로 옮겼다가
+    2026-08-14에 원상복구 — 서버 crontab 확인을 빠뜨렸던 실수, `archive/README.md` 참고
 - **`viewt/`**, **`viewt_outputs/`** — View-T(국가교통DB) 도로망 구간별 통행속도 백분위 데이터
   전국 다운로드/포맷 변환 (17개 시도 × 4개년 × 월/요일유형/시간대)
 - **`graph_years/`** — OSMnx 기반 서울 도로망 그래프 생성·시간대 평균화

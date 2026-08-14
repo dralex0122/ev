@@ -33,8 +33,12 @@ v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채�
 - `availability_loops/run_24h_hourly.py` → `run_monthly_hourly.py` →
   `run_10min_loop.py` (24시간 1회성 → 1개월 시간 단위 → 10분 간격, 3세대.
   `run_10min_loop.py` 자체 docstring에 "run_monthly_hourly.py를 대체" 명시)
-- `daily_check/check_and_email.py` — 이메일 기반 일일 점검, 현재는 Notion 기반
-  `daily_notion_check.sh`(launchd 등록)로 대체되어 더 이상 스케줄링되지 않음
+
+**정정(2026-08-14)**: `daily_check/check_and_email.py`를 여기 올렸던 건 판단 착오였음 —
+당시 로컬 Mac의 crontab/launchd만 확인하고 **서버 crontab을 확인하지 않아서**, 매일
+09시 서버 크론으로 실제 운영 중인 걸 몰랐음. archive 이동으로 경로가 깨져 2026-08-13,
+08-14 이틀간 이메일 발송 실패 — `daily_check/`로 원상복구함. 교훈: 스크립트가 정말
+안 쓰이는지 확인할 땐 로컬뿐 아니라 서버 crontab(`crontab -l`)도 반드시 같이 확인.
 
 ## `STATUS.md`
 2026-07-14 최초 24시간 수집 작업의 진행 기록. 그 작업은 완료됐고, 이후 프로젝트
