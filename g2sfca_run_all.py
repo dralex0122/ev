@@ -52,7 +52,7 @@ def main(supply, decay="binary"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park"])
+    parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park", "sfast"])
     parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
     args = parser.parse_args()
     main(args.supply, args.decay)

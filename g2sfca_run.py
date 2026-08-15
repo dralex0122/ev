@@ -28,6 +28,12 @@ S1/S2 결과는 서로 다른 폴더에 저장되어 기존 S1 결과와 섞이�
     binary로 단순화해서 썼음을 확인, 강건성 비교를 위해 추가.
   - gaussian 결과는 별도 폴더(예: g2sfca_s2_gaussian/)에 저장되어 기존 binary 결과를
     덮어쓰지 않음
+
+2026-08-15 급속충전기 전용 공급(--supply sfast) 추가: 교수님 제안 - 급속:완속 가중치
+논쟁 대신, 완속충전기를 아예 배제하고 급속충전기 보유 충전소만 공급으로 인정.
+yearly_snapshots_fastonly/의 급속 1대 이상 보유 충전소만 필터링된 파일을 사용.
+서울 기준 급속 보유 비율이 2021년 24.9% -> 2022~2024년 18~19%로 오히려 감소해서,
+S1/S2와 다른 증가율 패턴이 나올 수 있음.
 """
 import argparse
 import csv
@@ -47,6 +53,7 @@ NAS = "/mnt/cowork/EV"
 
 GRAPH_DIR = os.path.join(NAS, "input/processed/도로망_그래프/서울_연도별_시간대통합")
 CHARGER_DIR = os.path.join(NAS, "input/processed/yearly_snapshots")
+CHARGER_DIR_FASTONLY = os.path.join(NAS, "input/processed/yearly_snapshots_fastonly")
 D1_FP = os.path.join(NAS, "input/processed/서울시_생활인구/집계구_생활인구_원본(OA-14979)/d1_final_2021_2024.csv")
 
 WGS84_TO_5179 = Transformer.from_crs("EPSG:4326", "EPSG:5179", always_xy=True)
@@ -56,6 +63,7 @@ OUT_DIR_BASENAMES = {
     "s1": "g2sfca",
     "s2": "g2sfca_s2",
     "s2park": "g2sfca_s2_park10",
+    "sfast": "g2sfca_sfast",
 }
 
 
@@ -94,9 +102,12 @@ def load_oa_demand(year, period):
     return demand
 
 
-def load_chargers(year):
-    """충전소 로드: 연도별 스냅샷(설치연도 누적 필터링), 서울(zcode=11)만"""
-    fp = unicodedata.normalize("NFD", os.path.join(CHARGER_DIR, f"metro7_ev_chargers_{year}.geojson"))
+def load_chargers(year, supply_mode):
+    """충전소 로드: 연도별 스냅샷(설치연도 누적 필터링), 서울(zcode=11)만.
+    sfast는 완속만 있는 충전소가 애초에 제외된 별도 파일(yearly_snapshots_fastonly/)을 씀."""
+    charger_dir = CHARGER_DIR_FASTONLY if supply_mode == "sfast" else CHARGER_DIR
+    fname = f"metro7_ev_chargers_{year}_fastonly.geojson" if supply_mode == "sfast" else f"metro7_ev_chargers_{year}.geojson"
+    fp = unicodedata.normalize("NFD", os.path.join(charger_dir, fname))
     with open(fp, encoding="utf-8") as f:
         data = json.load(f)
     return [f for f in data["features"] if f["properties"].get("city") == "서울특별시"]
@@ -105,6 +116,8 @@ def load_chargers(year):
 def supply_value(props, supply_mode):
     if supply_mode == "s1":
         return props.get("total_count", 0)
+    if supply_mode == "sfast":
+        return props.get("fast_count", 0) or 0
     fast = props.get("fast_count", 0) or 0
     slow = props.get("slow_count", 0) or 0
     return fast * SUPPLY_FAST_RATIOS[supply_mode] + slow * 1
@@ -142,8 +155,10 @@ def main(year, daytype, period, scenario, supply="s1", decay="binary"):
         return node_ids[idx]
 
     # 충전소 로드
-    chargers = load_chargers(year)
+    chargers = load_chargers(year, supply)
     ratio_note = f"(급속가중 {SUPPLY_FAST_RATIOS[supply]}배)" if supply in SUPPLY_FAST_RATIOS else ""
+    if supply == "sfast":
+        ratio_note = "(완속 배제, 급속만)"
     print(f"충전소({year}, 서울): {len(chargers):,}개, 공급 정의: {supply}" + ratio_note + f", 거리조락: {decay}", flush=True)
 
     charger_info = {}
@@ -244,7 +259,7 @@ if __name__ == "__main__":
     parser.add_argument("--daytype", default="week", choices=["week", "weekend"])
     parser.add_argument("--period", default="오전", choices=["오전", "낮", "밤", "심야"])
     parser.add_argument("--scenario", default="normal", choices=["normal", "congested", "freeflow"])
-    parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park"])
+    parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park", "sfast"])
     parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
     args = parser.parse_args()
     main(args.year, args.daytype, args.period, args.scenario, args.supply, args.decay)
