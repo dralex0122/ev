@@ -14,7 +14,10 @@ export TMPDIR="$(getconf DARWIN_USER_TEMP_DIR)"
 export USER="$(id -un)"
 export LOGNAME="$(id -un)"
 
+# 서버 IP는 공개 저장소에 하드코딩하지 않고 로컬 전용 파일에서 읽어 프롬프트에 치환.
+SERVER_HOST="$(cat ~/.claude_server_host.txt)"
 PROMPT="$(cat daily_notion_check_prompt.txt)"
+PROMPT="${PROMPT//__SERVER_HOST__/$SERVER_HOST}"
 
 echo "=== $(date) 실행 시작 (prompt ${#PROMPT}자) ===" >> daily_notion_check.log
 

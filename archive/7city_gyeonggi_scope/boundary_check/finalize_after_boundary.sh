@@ -38,7 +38,7 @@ else:
     env = os.environ.copy()
     env["PASSWD"] = nas_password
     r = subprocess.run(
-        ["smbclient", "//163.180.10.191/cowork", "-U", "dralex01", "-c", "; ".join(cmds)],
+        ["smbclient", f"//{os.environ.get('NAS_HOST')}/cowork", "-U", "dralex01", "-c", "; ".join(cmds)],
         env=env, capture_output=True, text=True,
     )
     print(r.stdout)

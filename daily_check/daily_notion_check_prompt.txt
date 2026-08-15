@@ -1,6 +1,6 @@
 You are running as a scheduled (unattended) daily check for the EV charger accessibility research project.
 
-Task: this check runs daily at 5:30pm (Asia/Seoul). SSH into the research server at 163.180.10.188 and check whether any meaningful new data-collection or analysis work happened in the last 24 hours (i.e. since roughly 5:30pm yesterday, server local time Asia/Seoul) — a ROLLING window, not the calendar day, so that anything that happens after 5:30pm today naturally gets picked up by tomorrow's 5:30pm run instead of being missed. Check things like:
+Task: this check runs daily at 5:30pm (Asia/Seoul). SSH into the research server at __SERVER_HOST__ and check whether any meaningful new data-collection or analysis work happened in the last 24 hours (i.e. since roughly 5:30pm yesterday, server local time Asia/Seoul) — a ROLLING window, not the calendar day, so that anything that happens after 5:30pm today naturally gets picked up by tomorrow's 5:30pm run instead of being missed. Check things like:
 - `cd ~/ev-charger-accessibility && git log --oneline --since="24 hours ago"` for new commits
 - tmux sessions (`tmux list-sessions`) and their logs for jobs that newly completed in that window (e.g. a download/collection pipeline finishing)
 - new files/folders created in that window under ~/ev-charger-accessibility (e.g. `find ~/ev-charger-accessibility -maxdepth 3 -newermt "24 hours ago"`)

@@ -20,7 +20,7 @@ SNAPSHOT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist
 
 WINDOW_END = datetime(2026, 8, 18, 23, 50, 0, tzinfo=KST)
 
-NAS_SHARE = "//163.180.10.191/cowork"
+NAS_SHARE = f"//{os.environ.get('NAS_HOST')}/cowork"
 NAS_USER = "dralex01"
 NAS_REMOTE_ROOT = "EV/input/raw/charger_accessibility"
 

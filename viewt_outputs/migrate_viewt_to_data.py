@@ -16,7 +16,7 @@ LOCAL_TMP = "/tmp/viewt_migrate"
 
 def run_smb(share, cmd_str):
     r = subprocess.run(
-        ["smbclient", f"//163.180.10.191/{share}", "-U", "dralex01", "-c", cmd_str],
+        ["smbclient", f"//{os.environ.get('NAS_HOST')}/{share}", "-U", "dralex01", "-c", cmd_str],
         env=ENV, capture_output=True, text=True,
     )
     return r

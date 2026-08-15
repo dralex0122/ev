@@ -23,7 +23,7 @@ KST = timezone(timedelta(hours=9))
 WINDOW_START = datetime(2026, 7, 22, 0, 1, 0, tzinfo=KST)
 WINDOW_END = datetime(2026, 8, 18, 23, 1, 0, tzinfo=KST)  # 이 시각(23시 수집)까지 포함
 
-NAS_SHARE = "//163.180.10.191/cowork"
+NAS_SHARE = f"//{os.environ.get('NAS_HOST')}/cowork"
 NAS_USER = "dralex01"
 NAS_REMOTE_ROOT = "EV/charger_accessibility"
 

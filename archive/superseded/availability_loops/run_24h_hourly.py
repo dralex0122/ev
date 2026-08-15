@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, timezone
 KST = timezone(timedelta(hours=9))
 TOTAL_RUNS = 24
 
-NAS_SHARE = "//163.180.10.191/cowork"
+NAS_SHARE = f"//{os.environ.get('NAS_HOST')}/cowork"
 NAS_USER = "dralex01"
 NAS_REMOTE_ROOT = "EV/charger_accessibility"
 

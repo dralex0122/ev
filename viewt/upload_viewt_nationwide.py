@@ -32,7 +32,7 @@ for i, ((year, region_en), flist) in enumerate(sorted(groups.items()), start=1):
 
     success = False
     for attempt in range(3):
-        r = subprocess.run(['smbclient', '//163.180.10.191/cowork', '-U', 'dralex01', '-c', cmd_str],
+        r = subprocess.run(['smbclient', f"//{os.environ.get('NAS_HOST')}/cowork", '-U', 'dralex01', '-c', cmd_str],
                             env=env, capture_output=True, text=True)
         out = r.stdout + r.stderr
         bad = [l for l in out.splitlines() if 'NT_STATUS' in l and 'NAME_COLLISION' not in l]
