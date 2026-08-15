@@ -21,13 +21,15 @@ S1/S2 결과는 서로 다른 폴더에 저장되어 기존 S1 결과와 섞이�
 2026-08-12 NAS 재구성(input/output/reference/나머지)에 맞춰 경로 갱신.
 
 2026-08-13 거리조락함수(--decay) 파라미터화 추가:
-  - binary(기본값, 기존 방식): t0=15분 이내면 가중치 1, 넘으면 0 - 기존 결과와 완전히 동일
-  - gaussian(신규): Luo & Qi(2009) E2SFCA 공식, 15분 이내에서도 가까울수록 더 큰 가중치.
+  - binary: t0=15분 이내면 가중치 1, 넘으면 0 - 기존(2026-08-13 이전) 결과와 완전히 동일
+  - gaussian: Luo & Qi(2009) E2SFCA 공식, 15분 이내에서도 가까울수록 더 큰 가중치.
     교수님 논문(2번, Leveraging temporal changes...) 코드가 이 공식을 씀 - 우리는 그동안
     이 논문에서 "15분"이라는 숫자만 가져오고 decay 함수 모양(Gaussian)은 검토 없이
     binary로 단순화해서 썼음을 확인, 강건성 비교를 위해 추가.
   - gaussian 결과는 별도 폴더(예: g2sfca_s2_gaussian/)에 저장되어 기존 binary 결과를
     덮어쓰지 않음
+  - **2026-08-15부터 기본값을 gaussian으로 변경**(사용자 지시) - --decay 생략 시
+    이제 gaussian이 실행됨. binary가 필요하면 명시적으로 --decay binary 지정.
 
 2026-08-15 급속충전기 전용 공급(--supply sfast) 추가: 교수님 제안 - 급속:완속 가중치
 논쟁 대신, 완속충전기를 아예 배제하고 급속충전기 보유 충전소만 공급으로 인정.
@@ -134,7 +136,7 @@ def decay_weight(travel_time_sec, cutoff_sec, decay_mode):
     return (math.exp(-0.5 * ratio ** 2) - math.exp(-0.5)) / (1 - math.exp(-0.5))
 
 
-def main(year, daytype, period, scenario, supply="s1", decay="binary"):
+def main(year, daytype, period, scenario, supply="s1", decay="gaussian"):
     out_dir = out_dir_for(supply, decay)
     os.makedirs(out_dir, exist_ok=True)
     t0 = time.time()
@@ -260,6 +262,6 @@ if __name__ == "__main__":
     parser.add_argument("--period", default="오전", choices=["오전", "낮", "밤", "심야"])
     parser.add_argument("--scenario", default="normal", choices=["normal", "congested", "freeflow"])
     parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park", "sfast"])
-    parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
+    parser.add_argument("--decay", default="gaussian", choices=["binary", "gaussian"])
     args = parser.parse_args()
     main(args.year, args.daytype, args.period, args.scenario, args.supply, args.decay)

@@ -28,7 +28,7 @@ def build_combos():
     return combos
 
 
-def main(supply, decay="binary"):
+def main(supply, decay="gaussian"):
     combos = build_combos()
     print(f"총 {len(combos)}개 조합 실행 시작 (supply={supply}, decay={decay})", flush=True)
 
@@ -53,6 +53,6 @@ def main(supply, decay="binary"):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--supply", default="s1", choices=["s1", "s2", "s2park", "sfast"])
-    parser.add_argument("--decay", default="binary", choices=["binary", "gaussian"])
+    parser.add_argument("--decay", default="gaussian", choices=["binary", "gaussian"])
     args = parser.parse_args()
     main(args.supply, args.decay)
