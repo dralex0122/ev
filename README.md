@@ -12,6 +12,16 @@
     공공데이터포털 공식 공지로 원인 확인
 - 서비스키는 전부 환경변수(`EV_SERVICE_KEY`, 지오코딩은 `VWORLD_API_KEY`)로 관리, 코드에 하드코딩하지 않음
 
+## 지금 분석 중인 코드 (빠른 참고)
+- **`g2sfca_run.py`, `g2sfca_run_all.py`**(저장소 루트) — G2SFCA 접근성 분석 본 파이프라인·배치
+  실행기. 현재 진행 중인 작업(거리조락함수, 공급 정의 강건성 비교 등)이 전부 이 두 파일에서
+  이뤄짐. 세부 내용은 아래 "접근성 분석 파이프라인" 절 참고
+- **`availability_loops/run_10min_loop.py`** — 서버에서 실시간으로 계속 도는 10분 주기 가용률
+  수집 루프(위 G2SFCA의 S2 공급 정의가 이 실측 데이터를 사용)
+- 그 외 폴더(`building_register/`, `daynight_model/`, `graph_years/`, `grid_population/` 등)는
+  이미 완료되어 위 두 파일의 입력으로만 쓰이는 보조 데이터/모델 — 전체 계보는 아래 "폴더 구조 및
+  스크립트 계보" 절 참고
+
 ## 인프라
 - **로컬 Mac**: 개발/조율, GitHub push
 - **연구실 서버(내부망, 비공개 IP)**: SSH 키 인증, git deploy key로 GitHub 직접 push,
