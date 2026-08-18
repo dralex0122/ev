@@ -175,3 +175,32 @@ Notion 페이지 "전기차 접근성"에 **2026-08-14** 섹션을 정상적으�
 - 추가로 8/11~8/13 SSH 간헐 장애로 며칠간 자동 체크가 실패했던 기간의 커밋들(NAS 재구성, G2SFCA Gaussian 거리조락함수 추가)은 이미 사용자가 직접 2026-08-12/08-13 토글에 수동 보충 기록해 둔 상태라 중복 보고 없이 넘어감.
 - `260813`/`260814` 데이터 폴더 등은 평소 10분 수집 루프의 정상 동작이라 보고 대상에서 제외.
 === Fri Aug 14 17:33:41 KST 2026 실행 완료 (exit code 0) ===
+=== Sat Aug 15 17:30:05 KST 2026 실행 시작 (prompt 2884자) ===
+Notion 페이지에 오늘(2026-08-15) 섹션 안에 누락돼 있던 내용을 추가로 append했습니다. 이미 사용자가 직접 기록해둔 sfast 공급 기능/저장소 정리/결과 비교표는 건드리지 않고, 그 뒤에 새 하위 섹션만 덧붙였습니다.
+
+**추가한 내용:**
+- 거리조락함수 기본값 binary → gaussian 전환 (`g2sfca_run.py`, `g2sfca_run_all.py`)
+- sfast+gaussian 조합 80개 배치 재실행 완료(80/80 성공, 33.2분)
+- 공개 저장소 전환 대비 서버·NAS IP 주소 코드/문서에서 전부 제거
+- README 최신화 반영
+
+지난 24시간 커밋 5건 중 archive 정리·sfast 배치 결과는 이미 Notion에 있었고, 나머지(gaussian 기본값 전환·보안 IP 정리)만 새로 반영해 중복 없이 append 완료했습니다.
+=== Sat Aug 15 17:32:45 KST 2026 실행 완료 (exit code 0) ===
+=== Sun Aug 16 17:30:05 KST 2026 실행 시작 (prompt 2884자) ===
+## 확인 결과: 특이사항 없음
+
+지난 24시간(서버 기준 8/15 17:30 ~ 8/16 17:30) 동안 서버를 확인한 결과:
+
+- **git 커밋**: 없음 (최신 커밋은 8/16 이전 보안 정리 커밋)
+- **tmux**: `loop_10min` 세션만 존재 — 8/15 14:56에 시작된 기존 세션으로, 정상적인 10분 주기 서울+6대 광역시 가용률 수집 루프가 계속 돌고 있을 뿐
+- **새 파일**: `charger_accessibility/260815`, `260816` 날짜 폴더 — 위 루틴 수집 루프의 정상 산출물 (시간대별 anomalies JSON 등), 이상치 0건으로 지속 기록 중
+- **untracked 파일**(`archive/7city_gyeonggi_scope/boundary_check/*.csv`): 모두 7/21~8/15 생성분으로 24시간 창 밖 — 이번 건과 무관
+- **cron**: 9시 일일 이메일 체크 + 부팅 시 루프 재시작만 등록됨, 변경 없음
+
+새로운 파이프라인/스크립트 추가, 데이터 품질 수정, 신규 외부 데이터 수집 등 의미 있는 이벤트가 없어 지시사항에 따라 **Notion 페이지는 건드리지 않았습니다.**
+=== Sun Aug 16 17:31:03 KST 2026 실행 완료 (exit code 0) ===
+=== Mon Aug 17 17:30:04 KST 2026 실행 시작 (prompt 2884자) ===
+This is exactly the expected routine pattern — the daily `charger_accessibility/YYMMDD/` folder is created automatically every day by the existing 10-minute collection loop, no new commits in the last 24 hours, and no new pipeline/script. This is not meaningful new work.
+
+Notion을 건드리지 않고 조용히 종료합니다. 지난 24시간 동안 새 커밋이 없었고, tmux `loop_10min` 세션은 기존 10분 주기 가용률 수집 루프가 정상 동작 중인 것뿐이며(이상치 0건 지속), `charger_accessibility/260817/` 폴더 생성도 매일 자동으로 발생하는 루틴 패턴입니다. 보고할 만한 새로운 작업이 없어 확인만 하고 종료합니다.
+=== Mon Aug 17 17:47:06 KST 2026 실행 완료 (exit code 0) ===
