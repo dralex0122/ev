@@ -1,11 +1,12 @@
 """
-2026-08-18 23:50(KST)까지, 10분마다 district_availability_snapshot.py를
-실행하고 NAS에 자동 업로드하는 루프. run_monthly_hourly.py(1시간 간격)를
-대체해서 더 촘촘한 간격으로 전환.
+10분마다 district_availability_snapshot.py를 실행하고 NAS에 자동 업로드하는 루프.
+run_monthly_hourly.py(1시간 간격)를 대체해서 더 촘촘한 간격으로 전환.
 
 - district_availability_snapshot.py의 저장 폴더명은 "HH시MM분"(분 단위 포함)으로
   이미 수정되어 있어, 10분마다 실행해도 서로 덮어쓰지 않고 다 남음
 - NAS 업로드 로직은 기존과 동일
+- 원래 2026-07-22~2026-08-18 계획된 4주 수집이었으나(WINDOW_END로 종료 시각 하드코딩),
+  4주 완료 후 계속 수집할지 결정 전까지 임시로 하루씩 연장하는 중(2026-08-19)
 """
 
 import os
@@ -18,7 +19,7 @@ KST = timezone(timedelta(hours=9))
 INTERVAL_MINUTES = 10
 SNAPSHOT_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "district_availability_snapshot.py")
 
-WINDOW_END = datetime(2026, 8, 18, 23, 50, 0, tzinfo=KST)
+WINDOW_END = datetime(2026, 8, 19, 23, 50, 0, tzinfo=KST)
 
 NAS_SHARE = f"//{os.environ.get('NAS_HOST')}/cowork"
 NAS_USER = "dralex01"
