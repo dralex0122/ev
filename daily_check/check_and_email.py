@@ -138,6 +138,13 @@ def main():
     date_folder = yesterday.strftime("%y%m%d")
     date_str = yesterday.strftime("%Y-%m-%d")
 
+    # 2026-08-21: 4주 수집(~08-19) 종료 후 재개 전까지 오탐 방지.
+    # 날짜 폴더 자체가 없으면 수집이 의도적으로 중단된 상태로 보고 조용히 스킵.
+    # 수집이 재개되면(run_10min_loop.py가 다시 폴더를 만들면) 자동으로 이메일 재개됨.
+    if not os.path.isdir(os.path.join(BASE_DIR, date_folder)):
+        print(f"{date_folder} 폴더 없음 -> 가용률 수집 중단 상태로 판단, 이메일 스킵")
+        return
+
     total_expected, total_found, bad_slots_by_city, anomalies_missing_hours = check_date(date_folder)
 
     if not bad_slots_by_city and not anomalies_missing_hours:
