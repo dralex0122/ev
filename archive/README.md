@@ -35,6 +35,14 @@ v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채�
   `run_10min_loop.py` 자체 docstring에 "run_monthly_hourly.py를 대체" 명시)
 - `chain_s2park.sh` — S2→s2park 배치 자동 연계용 일회성 스크립트, 2026-08-10 실행
   완료 후 더 이상 쓰이지 않음(크론/tmux 어디에도 등록 안 됨 확인)
+- `g2sfca_final/cumulative_opportunity_supply.py` — 2SFCA·Gravity·Cumulative
+  Opportunity 3모형 비교 중 2026-08-31 사용자 결정으로 최종 비교는 2모형(2SFCA·
+  Gravity)만 채택, Cumulative Opportunity는 제외됨(계산은 정상 완료, 결과도
+  틀리지 않음 — 순전히 범위 축소 결정)
+- `g2sfca_final/plot_three_model_hotspot.py`,
+  `g2sfca_final/plot_three_model_hotspot_individual.py` → `plot_two_model_hotspot.py`,
+  `plot_two_model_by_year.py` (위와 같은 이유로 3모형 포함 구버전 지도 스크립트를
+  2모형 버전으로 교체, 2026-08-31)
 
 **정정(2026-08-14)**: `daily_check/check_and_email.py`를 여기 올렸던 건 판단 착오였음 —
 당시 로컬 Mac의 crontab/launchd만 확인하고 **서버 crontab을 확인하지 않아서**, 매일
