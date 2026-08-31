@@ -254,3 +254,46 @@ Notion 페이지 업데이트를 완료했습니다.
 
 다만 참고로 알려드릴 점: `run_10min_loop.py`(10분 주기 가용률 수집)가 **8/19 이후 멈춰있고**, 현재 tmux 서버 자체가 떠 있지 않으며 관련 python 프로세스도 없습니다. `check_email_log.txt`에 따르면 8/21~8/24 데이터 폴더 부재가 이미 매일 이메일로 자동 알림되고 있어(별도 `check_and_email.py` 알림 체계) 이 건은 노션이 아닌 그 채널로 계속 통지되는 중입니다. 필요하시면 제가 서버에서 루프를 재시작해드릴 수 있습니다.
 === Tue Aug 25 17:31:15 KST 2026 실행 완료 (exit code 0) ===
+=== Wed Aug 26 17:30:05 KST 2026 실행 시작 (prompt 2884자) ===
+확인 결과, 지난 24시간 동안 서버에서 새 커밋은 없었고(`git log --since="24 hours ago"` 결과 없음), tmux 수집 루프도 중단된 상태였습니다. 다음 사항들을 조사했습니다:
+
+- **`g2sfca_final/hotspot_gi_star.py`** (Gi* 우선설치 후보지역 분석 스크립트, 오늘 17:12 생성) — 새 파일이지만, Notion 페이지 상단 "🗂️ 코드 인벤토리" 섹션에 이미 "2026-08-26 신규"로 반영되어 있음. 중복 기재 방지를 위해 스킵.
+- **가용률 수집 중단(`폴더 없음`, 8/21~8/25)** — 처음엔 장애처럼 보였으나, 확인 결과 4주 수집(7/22~8/19) 종료에 따른 의도된 중단이며, 이는 이미 8/21 토글에 "`check_and_email.py` 오탐 수정" 항목으로 문서화되어 있는 기존 사실임.
+- **`daily_check/4week_scraping_summary.json`** — mtime은 최근이지만 이미 8/19 관련 토글에서 동일 파일 경로가 결과물로 언급된 기존 산출물.
+
+즉, 24시간 롤링 윈도우 안에서 실질적으로 "새로 발생했고 아직 Notion에 반영 안 된" 항목은 없어 이번 실행에서는 Notion을 건드리지 않았습니다.
+=== Wed Aug 26 17:32:58 KST 2026 실행 완료 (exit code 0) ===
+=== Thu Aug 27 17:30:01 KST 2026 실행 시작 (prompt 3857자) ===
+Permission allow rule (../.claude/settings.local.json): Bash(cp /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/seoul_2024_07_weekday_graphs/*.graphml "/Volumes/cowork/EV/도로망_그래프/서울_2024_07_평일/") has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+Permission allow rule (../.claude/settings.local.json): Bash(grep -oE "참고자료[^<]{0,50}|attach[a-zA-Z]*|reference[a-zA-Z]*" /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/oa14979.html) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+확인 결과, 오늘(2026-08-27) 날짜 토글이 이미 Notion 페이지에 존재하며, 서버에서 발견한 내용을 모두 포함하고 있습니다.
+
+**서버 점검 결과 (지난 24시간)**
+- 새 git 커밋 없음 (최신 커밋은 `ad76a9e`, 2026-08-24)
+- tmux 세션 없음 (실행 중인 작업 없음)
+- `g2sfca_final/`에 새 노트북 4개(`*_mw.ipynb`) 발견 — 하지만 이는 이미 오늘 토글의 "사용자 자체 재구현(_mw 노트북) 검증" 섹션에 상세히 반영되어 있음 (공급계산·지니팔마·freeflow민감도·핫스팟 각각의 검증 결과까지 포함)
+- 기타 미추적 파일(`boundary_check_*.csv`, `simya_recollect.log`, `4week_scraping_summary.json`)은 모두 8/20 이전 파일로 24시간 윈도우 밖
+
+기존 토글에는 Gi* FDR 보정 검토, 발표자료 보완, _mw 노트북 검증, 랩미팅 결과(다음 연구 방향)까지 모두 이미 기록되어 있어 중복 항목을 추가하지 않았습니다. 별도 조치 없이 점검을 종료합니다.
+=== Thu Aug 27 17:32:26 KST 2026 실행 완료 (exit code 0) ===
+=== Fri Aug 28 17:30:04 KST 2026 실행 시작 (prompt 3857자) ===
+Permission allow rule (../.claude/settings.local.json): Bash(cp /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/seoul_2024_07_weekday_graphs/*.graphml "/Volumes/cowork/EV/도로망_그래프/서울_2024_07_평일/") has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+Permission allow rule (../.claude/settings.local.json): Bash(grep -oE "참고자료[^<]{0,50}|attach[a-zA-Z]*|reference[a-zA-Z]*" /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/oa14979.html) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+태그 균형(48/48) 확인됐고 수정이 정상 반영됐습니다.
+
+**요약**: 서버 SSH 점검 결과 최근 24시간 내 신규 커밋·tmux 세션·신규 파일 없음, 특이사항 없음. 가용률 10분 수집 루프는 8/21 의도적 중단(4주 수집 종료) 상태가 그대로 유지 중(이미 8/21 토글에 반영된 사실). 오늘 사용자가 직접 작성해둔 `📅 2026-08-28` 토글에 "운영" 섹션으로 이 점검 결과를 추가했습니다(신규 토글 생성 없이 기존 토글에 append).
+=== Fri Aug 28 17:32:55 KST 2026 실행 완료 (exit code 0) ===
+=== Sat Aug 29 17:30:03 KST 2026 실행 시작 (prompt 3857자) ===
+Permission allow rule (../.claude/settings.local.json): Bash(cp /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/seoul_2024_07_weekday_graphs/*.graphml "/Volumes/cowork/EV/도로망_그래프/서울_2024_07_평일/") has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+Permission allow rule (../.claude/settings.local.json): Bash(grep -oE "참고자료[^<]{0,50}|attach[a-zA-Z]*|reference[a-zA-Z]*" /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/oa14979.html) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+`<details>`/`</details>` 태그 균형(49/49) 확인됐고, 「📅 2026-08-29」 토글이 정상적으로 추가되었습니다. 나머지 페이지 내용은 그대로 유지됩니다.
+
+**결과 요약**: 지난 24시간 서버 점검 결과 신규 커밋·tmux 세션·신규 파일 없음(특이사항 없음). 가용률 10분 수집 루프는 8/21 의도적 중단 상태 그대로 유지 중(이미 8/21 토글에 반영된 사실). Notion에 오늘 날짜 토글을 신규 추가 완료.
+=== Sat Aug 29 17:32:06 KST 2026 실행 완료 (exit code 0) ===
+=== Sun Aug 30 17:30:01 KST 2026 실행 시작 (prompt 3857자) ===
+Permission allow rule (../.claude/settings.local.json): Bash(cp /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/seoul_2024_07_weekday_graphs/*.graphml "/Volumes/cowork/EV/도로망_그래프/서울_2024_07_평일/") has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+Permission allow rule (../.claude/settings.local.json): Bash(grep -oE "참고자료[^<]{0,50}|attach[a-zA-Z]*|reference[a-zA-Z]*" /private/tmp/claude-501/-Users-jeongminwoo-ev-charger-accessibility/7085c972-eecc-4a20-be30-28ee1c446e12/scratchpad/oa14979.html) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.
+Notion 페이지에 오늘(2026-08-30) 토글이 정상적으로 추가됐습니다 (`<details>`/`</details>` 태그 50/50 균형 확인).
+
+**확인 결과 요약**: 8/27 랩미팅에서 지시된 3개 모형(2SFCA/Gravity/Cumulative Opportunity) 비교 파이프라인이 오늘 전체 완료됨 — 신규 계산 스크립트 2건, Gi* 핫스팟 비교 분석, 12장짜리 비교 지도까지 산출물 생성 완료. 다만 아직 git 커밋은 안 된 상태(작업 진행 중으로 추정). 새 커밋이나 tmux 작업은 없었음. 가용률 수집 루프는 8/21부터 계속 중단 상태 유지.
+=== Sun Aug 30 17:32:30 KST 2026 실행 완료 (exit code 0) ===
