@@ -54,6 +54,15 @@
 - Notion 페이지("전기차 접근성")에 날짜별 토글로 분석/운영 내용을 정리, 연구 마일스톤 동기화
 
 ## 폴더 구조 및 스크립트 계보
+**2026-09-04 정리**: `g2sfca_final/`(2SFCA·Gravity 실제 계산·지도, 런타임에 직접
+실행되는 코드)이 아닌 폴더 10개 — 데이터 준비 단계(결과는 NAS 캐시로 소비되고
+스크립트 자체는 다시 안 돌림)이거나 운영 인프라(daily_check, availability_loops)이거나
+현재 파이프라인 미사용 사이드 분석(daynight_model)인 것들 — 를 `support/` 아래로
+모음. 아래 각 항목의 실제 경로는 전부 `support/<폴더명>/`. `daily_check`·
+`availability_loops`는 로컬 launchd·서버 crontab에 등록되어 있어 이동 시 경로도
+함께 갱신함(내부 스크립트의 `REPO_ROOT` 계산, launchd plist, 서버 crontab 전부
+2026-09-04에 같이 수정·검증 완료).
+
 - **`availability_loops/`** — 현재 운영 중인 10분 간격 가용률 수집 루프.
   `district_availability_snapshot.py`가 서울+6대 광역시를 구/군 단위로 쪼개 가용률(전체/가용
   대수·비율, 완속/고속 구분) 계산, `run_10min_loop.py`가 스케줄링. 무한 재시도 방지용 상한

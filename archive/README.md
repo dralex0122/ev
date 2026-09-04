@@ -89,4 +89,20 @@ v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채�
 ## `7city_gyeonggi_scope/outputs/`
 7개도시+경기도 스코프 시절 최종 GeoJSON 산출물(충전소 위치+완속/고속 대수).
 `collection/`·`data_cleaning/`의 archive된 스크립트에서만 참조되고 현재 파이프라인
-(연도별 `yearly_snapshots/`)과는 무관해 함께 이동.
+(연도별 `input/processed/yearly_snapshots_fastonly/`, NAS)과는 무관해 함께 이동.
+
+## `7city_gyeonggi_scope/legacy_root_outputs/`
+2026-09-04 서버 정리 때 루트에 그대로 남아있던 걸 발견해서 옮김(서버 전용 —
+로컬 repo엔 애초에 없었음).
+- `yearly_snapshots/` — `gyeonggi_ev_chargers_*`, `metro7_ev_chargers_*` geojson.
+  이름이 비슷한 `g2sfca_final_supply.py`가 참조하는 NAS 경로
+  `{NAS}/input/processed/yearly_snapshots/`와는 **다른 파일** — 그쪽은 NAS 마운트,
+  이건 리포 루트에 남아있던 7개도시 스코프 시절 원본이라 혼동 주의
+- `dedup_outputs/` — 7개도시 스코프 중복 후보 CSV 3종(`archive/7city_gyeonggi_scope/
+  data_cleaning/`의 archive된 스크립트들이 만든 산출물)
+- `logs/` — 실행 로그 모음, 대부분 7개도시 스코프·daynight_model v2\~v7 실험·
+  `superseded/root_scripts/`로 옮겨진 스크립트(chain_s2park, travel_time_pipeline
+  등)에서 나온 것. **단, `g2sfca_run_all*.log`류 일부는 루트에 남아있는
+  `g2sfca_run.py`/`g2sfca_run_all.py`(강건성 비교, 지금도 README에 인용됨) 실행
+  기록이라 완전히 죽은 로그는 아님** — 결과 자체는 다른 곳(NAS)에 이미 있으므로
+  로그만 보존 목적으로 함께 이동, 필요하면 꺼내 쓸 것
