@@ -99,6 +99,9 @@ def main():
             sub = hs[(hs["model"] == model) & (hs["year"] == year)].set_index("oa_code")
             g["gi_class"] = g["TOT_REG_CD"].map(sub["gi_class"])
             dissolved = g.dissolve(by="gi_class")
+            # dissolve 후 부동소수점 오차로 남는 미세 seam을 작은 버퍼로 스냅
+            # (boundary만 그리는 지도라 이게 없으면 경계선이 부서져 보임)
+            dissolved["geometry"] = dissolved.geometry.buffer(1).buffer(-1)
             if "Hot Spot" in dissolved.index:
                 dissolved.loc[["Hot Spot"]].boundary.plot(ax=ax, color=HOT_COLOR, linewidth=1.1)
             if "Cold Spot" in dissolved.index:

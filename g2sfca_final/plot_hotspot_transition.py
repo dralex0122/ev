@@ -43,6 +43,7 @@ def main():
         g.plot(ax=ax, color=BG, edgecolor=BORDER, linewidth=0.15)
 
         dissolved = g.dissolve(by="transition")
+        dissolved["geometry"] = dissolved.geometry.buffer(1).buffer(-1)
         # 배경성 카테고리 먼저(있어도 안 보이게), 강조 카테고리는 나중에 그려서 위에 오도록
         for key in ["지속핫", "신규악화(Hot->Cold)", "개선(Cold->Hot)", "지속콜드"]:
             if key in dissolved.index:

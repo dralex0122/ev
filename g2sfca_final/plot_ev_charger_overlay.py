@@ -50,6 +50,7 @@ def main():
     g.plot(ax=ax, color=BG, edgecolor=BORDER, linewidth=0.15)
 
     dissolved = g.dissolve(by="quad")
+    dissolved["geometry"] = dissolved.geometry.buffer(1).buffer(-1)
     for key in ["선제공급", "균형성장", "미스매치(EV만 급증)"]:
         if key in dissolved.index:
             dissolved.loc[[key]].plot(ax=ax, facecolor=COLOR_MAP[key], edgecolor=COLOR_MAP[key], linewidth=0.4, alpha=0.85)

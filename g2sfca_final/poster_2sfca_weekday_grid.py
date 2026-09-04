@@ -70,6 +70,7 @@ def main():
         sub = hs[hs["year"] == year].set_index("oa_code")
         g["gi_class"] = g["TOT_REG_CD"].map(sub["gi_class"])
         dissolved = g.dissolve(by="gi_class")
+        dissolved["geometry"] = dissolved.geometry.buffer(1).buffer(-1)
         if "Hot Spot" in dissolved.index:
             dissolved.loc[["Hot Spot"]].boundary.plot(ax=ax, color=HOT_COLOR, linewidth=1.1)
         if "Cold Spot" in dissolved.index:

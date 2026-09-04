@@ -51,6 +51,7 @@ def main():
 
             g.plot(ax=ax, color=BG, edgecolor=BORDER, linewidth=0.15)
             dissolved = g.dissolve(by="gi_class")
+            dissolved["geometry"] = dissolved.geometry.buffer(1).buffer(-1)
             if "Hot Spot" in dissolved.index:
                 dissolved.loc[["Hot Spot"]].plot(ax=ax, facecolor=HOT_COLOR, edgecolor=HOT_COLOR, linewidth=0.5, alpha=FILL_ALPHA)
             if "Cold Spot" in dissolved.index:
