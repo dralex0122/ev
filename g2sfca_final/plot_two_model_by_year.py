@@ -1,7 +1,8 @@
 """
 plot_two_model_hotspot.py(2SFCA vs Gravity 2x4 합본)를 연도별로 한 장씩 분리 —
 연도당 1개 파일(2SFCA·Gravity 나란히), 총 4장. 새 폴더 output/maps/two_model_by_year/
-에 저장. 기존 three_model_hotspot_k30.csv 재사용(재계산 불필요).
+에 저장. two_model_hotspot.py가 계산 단계부터 2개 모형만 돌려 저장한
+two_model_hotspot_k30.csv를 읽음(재계산 불필요).
 """
 import os
 import geopandas as gpd
@@ -14,7 +15,7 @@ plt.rcParams["axes.unicode_minus"] = False
 
 NAS = "/mnt/cowork/EV"
 BOUNDARY_FP = f"{NAS}/input/raw/집계구_2016/집계구.shp"
-HOTSPOT_FP = f"{NAS}/output/three_model_hotspot_k30.csv"
+HOTSPOT_FP = f"{NAS}/output/two_model_hotspot_k30.csv"
 OUT_DIR = f"{NAS}/output/maps/two_model_by_year"
 
 YEARS = [2021, 2022, 2023, 2024]
