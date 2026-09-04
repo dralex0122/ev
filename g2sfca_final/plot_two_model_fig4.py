@@ -1,14 +1,17 @@
 """
 Park et al.(2022, IJGIS) Fig.4 형식 재현 — 2SFCA vs Gravity Model 비교 지도.
 
-랩미팅(8/27) 지시: natural-breaks 그레이스케일 그라디언트 배경(원본 접근성 점수) +
-그 위에 Gi* Hot/Cold 경계선만 오버레이(면 채우기 아님). 4개년(2021~2024)을
-비교하려면 배경 스케일이 통일돼 있어야 해서, natural-breaks 구간 경계를 모형별로
-4개년 점수를 합친 뒤 한 번만 계산해서 4개 연도 전부에 동일하게 적용
-(연도별로 따로 구간을 나누면 "2022년이 어두운 이유"가 실제 악화인지 단순
-구간 재조정 때문인지 구분이 안 됨).
+랩미팅(9/2) 녹음 전사 원본 확인(2026-09-04) 기준 지시: natural-breaks 그레이스케일
+그라디언트 배경(원본 접근성 점수) + 그 위에 Gi* Hot/Cold 경계선만 오버레이(면
+채우기 아님). 4개년(2021~2024)을 비교하려면 배경 스케일이 통일돼 있어야 해서,
+natural-breaks 구간 경계를 모형별로 4개년 점수를 합친 뒤 한 번만 계산해서 4개
+연도 전부에 동일하게 적용(연도별로 따로 구간을 나누면 "2022년이 어두운 이유"가
+실제 악화인지 단순 구간 재조정 때문인지 구분이 안 됨).
 
-배경 grayscale: Jenks natural breaks(k=5), 밝을수록 접근성 낮음 / 어두울수록 높음.
+배경 grayscale: Jenks natural breaks(k=15) — 원본 발화 "내추럴 브레이크가
+15개짜만 한단 말이야"를 그대로 반영(이전 버전은 k=5로 잘못 구현했었음).
+밝을수록 접근성 낮음 / 어두울수록 높음. 충전소 포인트 오버레이는 이 지도가
+아니라 별도의 "연구지역 지도"(포스터 필수 콘텐츠) 몫 — 이 지도엔 안 넣음.
 Hot/Cold 오버레이: two_model_hotspot_k30.csv의 Gi* 판정(dissolve 후 경계선만,
 면 채우기 없음) — Hot=빨강 굵은선, Cold=파랑 굵은선.
 
@@ -42,7 +45,7 @@ SCORE_PATH = {
     "Gravity": lambda year: f"{NAS}/output/gravity_model_gaussian/gravity_score_{year}_week_낮_normal.csv",
 }
 
-K_CLASSES = 5
+K_CLASSES = 15
 BORDER = "#c9c2ae"
 HOT_COLOR = "#e60000"
 COLD_COLOR = "#0047ab"
@@ -110,7 +113,7 @@ def main():
 
     fig.text(0.5, 0.95, "Gaussian 2SFCA vs Gravity Model — 접근성 점수(자연분류) + Gi* 경계 오버레이 (평일 낮, 2021~2024)",
               ha="center", fontsize=16, color=INK, fontweight="bold")
-    fig.text(0.5, 0.925, "배경: Natural Breaks(Jenks, k=5) 그레이스케일 · 모형별 4개년 공통 스케일  |  경계선: KNN(k=30) Gi* Hot/Cold, p<0.05",
+    fig.text(0.5, 0.925, "배경: Natural Breaks(Jenks, k=15) 그레이스케일 · 모형별 4개년 공통 스케일  |  경계선: KNN(k=30) Gi* Hot/Cold, p<0.05",
               ha="center", fontsize=10, color=MUTED)
 
     legend_ax = fig.add_axes([0.30, 0.02, 0.4, 0.04])
