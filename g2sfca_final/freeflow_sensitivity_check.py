@@ -3,7 +3,7 @@
 민감도(robustness) 체크 스크립트.
 
 배경: congested/normal/freeflow는 실측 혼잡도가 아니라 도로구간별 속도 백분위수
-(15%/30%/85%)로 정의됨(graph_years/build_seoul_network_years.py 참고). 속도가
+(15%/30%/85%)로 정의됨(support/graph_years/build_seoul_network_years.py 참고). 속도가
 빠를수록 15분 컷오프 내 도달 가능 충전소 수(catchment)가 커져서, Gini가 실제
 형평성 효과가 아니라 catchment 확대에 따른 방법론적 압축 효과로 낮아질 수 있다는
 가설을 세우고, 인구·요일·연도를 고정한 채 교통 시나리오만 바꿔가며 통제실험으로

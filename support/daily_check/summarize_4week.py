@@ -12,7 +12,7 @@ from datetime import datetime
 
 BASE = os.path.expanduser("~/ev-charger-accessibility/charger_accessibility")
 DATE_START = "260722"
-OUT_FP = os.path.expanduser("~/ev-charger-accessibility/daily_check/4week_scraping_summary.json")
+OUT_FP = os.path.expanduser("~/ev-charger-accessibility/support/daily_check/4week_scraping_summary.json")
 
 PERIOD_OF = {}
 for h in range(24):

@@ -22,8 +22,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(REPO_ROOT, "availability_loops"))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(REPO_ROOT, "support", "availability_loops"))
 from district_availability_snapshot import CITIES, KNOWN_DISTRICTS
 
 KST = timezone(timedelta(hours=9))

@@ -2,7 +2,7 @@
 # 매일 한 번, 서버에서 그날 새로 생긴 작업이 있는지 확인해서
 # 있으면 노션 "전기차 접근성" 페이지에 요약을 이어붙이는 스크립트.
 # crontab에서 이 스크립트를 호출.
-cd /Users/jeongminwoo/ev-charger-accessibility/daily_check || exit 1
+cd /Users/jeongminwoo/ev-charger-accessibility/support/daily_check || exit 1
 
 # cron은 macOS 로그인 키체인에 접근하지 못해 OAuth 로그인이 "Not logged in"으로 실패함.
 # 키체인 없이 인증하도록 setup-token으로 발급받은 장기 토큰을 사용.
