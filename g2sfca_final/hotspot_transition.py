@@ -1,12 +1,13 @@
 """
 2021년 vs 2024년 Gi* 핫스팟/콜드스팟 전이(transition) 분석 — 2SFCA, Gravity 각각.
-기존 three_model_hotspot_k30.csv(재계산 불필요) 활용.
+two_model_hotspot.py가 계산 단계부터 2개 모형만 돌려 저장한
+two_model_hotspot_k30.csv(재계산 불필요) 활용.
 """
 import pandas as pd
 import geopandas as gpd
 
 NAS = "/mnt/cowork/EV"
-HOTSPOT_FP = f"{NAS}/output/three_model_hotspot_k30.csv"
+HOTSPOT_FP = f"{NAS}/output/two_model_hotspot_k30.csv"
 BOUNDARY_FP = f"{NAS}/input/raw/집계구_2016/집계구.shp"
 OUT_FP = f"{NAS}/output/hotspot_transition_2021_2024.csv"
 

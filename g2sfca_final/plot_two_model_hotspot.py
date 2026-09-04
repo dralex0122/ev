@@ -1,7 +1,7 @@
 """
-plot_three_model_hotspot.py에서 Cumulative Opportunity 제외, Gaussian 2SFCA vs
-Gravity Model 2개 모형만 비교(2행x4열, 8장). 기존 three_model_hotspot_k30.csv
-(3개 모형 Gi* 결과 전부 포함)에서 2개만 골라 씀 — 재계산 불필요.
+Gaussian 2SFCA vs Gravity Model 2개 모형 비교(2행x4열, 8장).
+two_model_hotspot.py가 계산 단계부터 2개 모형만 돌려 저장한
+two_model_hotspot_k30.csv를 읽음(CumOpp 계산 자체가 없는 8개 조합 CSV).
 """
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -13,7 +13,7 @@ plt.rcParams["axes.unicode_minus"] = False
 
 NAS = "/mnt/cowork/EV"
 BOUNDARY_FP = f"{NAS}/input/raw/집계구_2016/집계구.shp"
-HOTSPOT_FP = f"{NAS}/output/three_model_hotspot_k30.csv"
+HOTSPOT_FP = f"{NAS}/output/two_model_hotspot_k30.csv"
 OUT_FP = f"{NAS}/output/maps/two_model_hotspot_k30.png"
 
 YEARS = [2021, 2022, 2023, 2024]
