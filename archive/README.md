@@ -18,31 +18,56 @@
 v5/v7의 로그변환·smearing 보정 실험은 개선 효과가 없어 미채택.
 
 ## `superseded/`
-개별적으로 더 나은 후속 버전이 있어 대체된 스크립트.
+개별적으로 더 나은 후속 버전이 있어 대체된 스크립트. **2026-09-04부터 원래 있던
+폴더(또는 루트)별로 하위 폴더를 나눠서 정리** — 예전엔 전부 평평하게 섞여 있었음.
+
+### `superseded/g2sfca_final/`
+- `cumulative_opportunity_supply.py` — 2SFCA·Gravity·Cumulative Opportunity 3모형
+  비교 중 2026-08-31 사용자 결정으로 최종 비교는 2모형(2SFCA·Gravity)만 채택,
+  Cumulative Opportunity는 제외됨(계산은 정상 완료, 결과도 틀리지 않음 — 순전히
+  범위 축소 결정)
+- `three_model_hotspot.py`, `plot_three_model_hotspot.py`,
+  `plot_three_model_hotspot_individual.py` → `two_model_hotspot.py`,
+  `plot_two_model_hotspot.py`, `plot_two_model_by_year.py` (위와 같은 이유로
+  계산 단계부터 3모형 포함 구버전을 2모형 버전으로 교체, 2026-08-31~09-04에 걸쳐
+  단계적으로 진행 — 처음엔 지도 스크립트만, 나중에 계산 스크립트 `three_model_hotspot.py`
+  자체도 CumOpp 없는 `two_model_hotspot.py`로 교체)
+
+### `superseded/root_scripts/`
 - `travel_time_pipeline.py` → `g2sfca_run.py` (250m 인구격자 기반 테스트 실행 →
   집계구 기반 파라미터화 버전으로 대체, 2026-08-05)
-- `building_register/compute_oa_centroids.py` → `compute_oa_centroids_2016.py`
-  (2025년 SGIS 집계구 경계가 인구 데이터 코드와 37%만 일치하는 버그 발견 →
-  100% 일치하는 2016년 경계로 교체)
-- `viewt/download_viewt_percentile.py` → `download_viewt_nationwide.py` →
-  `download_viewt_nationwide_parallel.py` (단일 도시 테스트 → 전국 → 병렬화, 3세대)
-- `viewt/download_viewt_network.py` → `download_viewt_detailed_network.py`
-  (WFS 직접 호출 방식 → 공식 상세도로망 shapefile 패키지로 교체, 실제 산출물 폴더도
-  `viewt_detailed_network/`만 존재해 후자만 사용됐음을 확인)
-- `viewt/convert_viewt_format.py` → `convert_viewt_format_nationwide.py`
-- `availability_loops/run_24h_hourly.py` → `run_monthly_hourly.py` →
-  `run_10min_loop.py` (24시간 1회성 → 1개월 시간 단위 → 10분 간격, 3세대.
-  `run_10min_loop.py` 자체 docstring에 "run_monthly_hourly.py를 대체" 명시)
+- `compute_s2_weighted_supply.py` — S2(급속:완속=2.4:1) 가중치 계산 초기 버전,
+  이후 `g2sfca_run.py --supply s2`로 파라미터화되며 대체
 - `chain_s2park.sh` — S2→s2park 배치 자동 연계용 일회성 스크립트, 2026-08-10 실행
   완료 후 더 이상 쓰이지 않음(크론/tmux 어디에도 등록 안 됨 확인)
-- `g2sfca_final/cumulative_opportunity_supply.py` — 2SFCA·Gravity·Cumulative
-  Opportunity 3모형 비교 중 2026-08-31 사용자 결정으로 최종 비교는 2모형(2SFCA·
-  Gravity)만 채택, Cumulative Opportunity는 제외됨(계산은 정상 완료, 결과도
-  틀리지 않음 — 순전히 범위 축소 결정)
-- `g2sfca_final/plot_three_model_hotspot.py`,
-  `g2sfca_final/plot_three_model_hotspot_individual.py` → `plot_two_model_hotspot.py`,
-  `plot_two_model_by_year.py` (위와 같은 이유로 3모형 포함 구버전 지도 스크립트를
-  2모형 버전으로 교체, 2026-08-31)
+- `compute_supply_weights.py` — 운영시간을 "24시간 대비 실제 운영 비율(%)"로
+  할인하는 공급 가중치 방식(2026-08-19). 최종 확정 방법론에서는 시간대별로 따로
+  계산하는 구조와 안 맞아 폐기되고, `openinghour`를 분석 시간창과 대조해 0/1로
+  반영하는 방식(`g2sfca_final_supply.py`)으로 교체됨 — README.md 163행 참고
+- `check_fast_slow_utilization.py` — S2 가중치(급속:완속 비율) 검증용 실측 가동률
+  계산 스크립트, docstring에 "확정 아님" 명시. S2 자체가 sfast(완속 배제)로
+  대체되며 함께 불필요해짐
+- `watch_api_recovery.py` — 공공데이터포털 API 장애 감시용 1회성 유틸리티
+  (2026-08-12). 크론/launchd 어디에도 등록 안 됨, 연구 파이프라인과 무관한
+  운영 도구라 결과물 코드가 아님 — 필요 시(API 재장애) 참고용으로만 보존
+
+### `superseded/building_register/`
+- `compute_oa_centroids.py` → `compute_oa_centroids_2016.py`
+  (2025년 SGIS 집계구 경계가 인구 데이터 코드와 37%만 일치하는 버그 발견 →
+  100% 일치하는 2016년 경계로 교체)
+
+### `superseded/viewt/`
+- `download_viewt_percentile.py` → `download_viewt_nationwide.py` →
+  `download_viewt_nationwide_parallel.py` (단일 도시 테스트 → 전국 → 병렬화, 3세대)
+- `download_viewt_network.py` → `download_viewt_detailed_network.py`
+  (WFS 직접 호출 방식 → 공식 상세도로망 shapefile 패키지로 교체, 실제 산출물 폴더도
+  `viewt_detailed_network/`만 존재해 후자만 사용됐음을 확인)
+- `convert_viewt_format.py` → `convert_viewt_format_nationwide.py`
+
+### `superseded/availability_loops/`
+- `run_24h_hourly.py` → `run_monthly_hourly.py` → `run_10min_loop.py`
+  (24시간 1회성 → 1개월 시간 단위 → 10분 간격, 3세대. `run_10min_loop.py` 자체
+  docstring에 "run_monthly_hourly.py를 대체" 명시)
 
 **정정(2026-08-14)**: `daily_check/check_and_email.py`를 여기 올렸던 건 판단 착오였음 —
 당시 로컬 Mac의 crontab/launchd만 확인하고 **서버 crontab을 확인하지 않아서**, 매일
