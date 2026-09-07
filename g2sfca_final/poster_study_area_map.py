@@ -3,11 +3,17 @@
 (2026-09-04) 기준: "연구지역을 보여주는 지도... 충전소의 포인트[를] 넣어라".
 Figure4/Gi* 지도와는 별개의 산출물.
 
-서울 25개 자치구 경계(집계구를 자치구 단위로 dissolve) + 2024년 기준 급속충전소
-포인트(최종 방법론과 동일하게 아파트 소재 제외) 오버레이. 자치구 이름 라벨 포함.
+서울 25개 자치구 경계(집계구를 자치구 단위로 dissolve) + 2024년 급속충전소 포인트
+오버레이. 자치구 이름 라벨 포함.
+
+필터 기준을 poster_timeseries_week_day.py와 동일하게 맞춤(2026-09-07) — 처음엔
+아파트 제외만 적용했었는데, 포스터에서 두 그림이 나란히 보이면 "유효공급" 숫자가
+서로 달라(3,757 vs 3,737대) 일관성 문제가 생김. week_낮(평일 11~13시) 운영시간
+필터까지 동일하게 적용해서 두 그림의 숫자가 정확히 일치하도록 통일.
 """
 import json
 import os
+import re
 import unicodedata
 import geopandas as gpd
 import pandas as pd
@@ -24,6 +30,34 @@ CHARGER_FP = unicodedata.normalize(
 )
 APT_FP = f"{NAS}/output/apt_charger_flags/seoul_chargers_2024_apt_v3_final.csv"
 OUT_PNG = f"{NAS}/output/maps/poster_study_area_map.png"
+
+WINDOW_START, WINDOW_END = 11, 13  # 낮 11~13시
+DAYTYPE = "week"  # 평일
+
+TIME_RANGE_RE = re.compile(r"(\d{1,2})[:시](\d{2})?\s*[~-]\s*(\d{1,2})[:시](\d{2})?")
+
+
+def parse_open_window(text):
+    if not text or not text.strip() or "24시간" in text or "24시" in text:
+        return None
+    m = TIME_RANGE_RE.search(text.strip())
+    if not m:
+        return None
+    h1, _, h2, _ = m.groups()
+    start, end = int(h1), int(h2)
+    weekday_only = ("평일" in text) or ("주중" in text)
+    return (start, end, weekday_only)
+
+
+def is_open(parsed, window_start, window_end, daytype):
+    if parsed is None:
+        return True
+    start, end, weekday_only = parsed
+    if weekday_only and daytype == "weekend":
+        return False
+    if end <= start:
+        return True
+    return not (end <= window_start or start >= window_end)
 
 GU_MAP = {
     "11010": "종로구", "11020": "중구", "11030": "용산구", "11040": "성동구", "11050": "광진구",
@@ -66,6 +100,9 @@ def load_chargers():
             continue
         if p["station_id"] in apt_set:
             continue
+        hours = parse_open_window(p.get("openinghour", ""))
+        if not is_open(hours, WINDOW_START, WINDOW_END, DAYTYPE):
+            continue
         lon, lat = feat["geometry"]["coordinates"]
         rows.append({"station_id": p["station_id"], "fast_count": p.get("fast_count", 0) or 0,
                      "geometry": Point(lon, lat)})
@@ -76,7 +113,7 @@ def load_chargers():
 def main():
     gu = load_gu_boundary()
     pts = load_chargers()
-    print(f"자치구 {len(gu)}개, 충전소(아파트 제외) {len(pts)}개, 급속충전기 총 {pts['fast_count'].sum():,}대")
+    print(f"자치구 {len(gu)}개, 충전소(아파트 제외+week_낮 운영) {len(pts)}개, 급속충전기 총 {pts['fast_count'].sum():,}대")
 
     fig, ax = plt.subplots(figsize=(10, 10.5))
     gu.plot(ax=ax, color=GU_FILL, edgecolor=GU_BORDER, linewidth=0.9)
@@ -89,7 +126,7 @@ def main():
 
     ax.set_axis_off()
     ax.set_title("연구지역 — 서울시 25개 자치구 및 급속충전소 위치", fontsize=16, color=INK, fontweight="bold", pad=14)
-    fig.text(0.5, 0.045, f"2024년 기준, 급속충전소 {len(pts):,}개소(아파트 소재 제외) · 집계구(2016년 경계) 자치구 단위 병합",
+    fig.text(0.5, 0.045, f"2024년 기준, 급속충전소 {len(pts):,}개소({pts['fast_count'].sum():,}대, 평일 낮 11~13시 운영·아파트 소재 제외) · 집계구(2016년 경계) 자치구 단위 병합",
               ha="center", fontsize=10, color=MUTED)
 
     fig.tight_layout(rect=[0, 0.03, 1, 1])
