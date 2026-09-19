@@ -52,3 +52,10 @@ EndNote-EV.Data/
 EndNote_backup_*/
 *.ris
 .DS_Store
+
+# node.js 의존성 (통째로 딸려들어가는 문제 방지, package.json으로 재설치 가능)
+node_modules/
+
+# 포스터 제작용 산출물(이미지/pptx) — 스크립트만 GitHub에, 산출물은 NAS에 보관
+g2sfca_final/drafts/
+poster_assets/*.pptx
