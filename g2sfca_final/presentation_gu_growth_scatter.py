@@ -5,7 +5,7 @@ presentation_hotspot_interpretation.py 산출물(gu_absolute_vs_relative_2021_20
 보도자료 그룹은 2026-10-01 노션 「구별 보도자료 조사」 기준:
   - 초기 시 집중투자: 서울형 집중충전소 1차(강남·광진·마포·서초·중구)
   - 2022~23 구 자체 확충계획: 양천·성북·도봉·노원·강동·구로
-주의: 유효 공급에 이용제한(UseLimitation=Y) 충전기 포함 상태(미수정).
+2026-10-14: 비공용 충전기 제외 최종 버전(nonpublic)으로 전환.
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,16 +16,18 @@ plt.rcParams["font.family"] = "NanumGothic"
 plt.rcParams["axes.unicode_minus"] = False
 
 NAS = "/mnt/cowork/EV"
-IN_FP = f"{NAS}/output/presentation_k20/gu_absolute_vs_relative_2021_2024.csv"
-OUT_FP = f"{NAS}/output/maps/presentation_gu_growth_scatter_k20.png"
-SEOUL_SUPPLY_X = 3737 / 892
+IN_FP = f"{NAS}/output/presentation_k20_nonpublic/gu_absolute_vs_relative_2021_2024.csv"
+OUT_FP = f"{NAS}/new_output/presentation_gu_growth_scatter_k20.png"
+SEOUL_SUPPLY_X = 2661 / 786
 
 EARLY = {"강남구", "광진구", "마포구", "서초구", "중구"}
 SELF_PLAN = {"양천구", "성북구", "도봉구", "노원구", "강동구", "구로구"}
 INK, MUTED, GRID = "#1f2328", "#6b7280", "#e5e7eb"
 # 서울 평균 부근에 몰린 구는 라벨 위치를 수동 지정(points)
-LABEL_OFFSET = {"노원구": (-30, 10), "영등포구": (-48, -2), "동작구": (-36, -12), "강서구": (10, -24),
-                "광진구": (-2, 10), "송파구": (10, -6), "서대문구": (8, -12), "은평구": (8, 6)}
+LABEL_OFFSET = {"마포구": (-30, 2), "성동구": (7, -5), "서초구": (7, -5), "동대문구": (7, 3),
+                "종로구": (-14, -15), "서대문구": (-12, 8), "용산구": (8, -6), "강서구": (7, -3),
+                "양천구": (-30, -3), "중랑구": (-6, -15), "동작구": (-36, -12), "광진구": (-2, 10),
+                "송파구": (10, -6)}
 
 
 def group_marker(gu):
@@ -46,7 +48,7 @@ def main():
     ax.axvline(SEOUL_SUPPLY_X, color=MUTED, lw=1, ls="--", zorder=1)
     ax.axhline(seoul_score_x, color=MUTED, lw=1, ls="--", zorder=1)
     ax.text(SEOUL_SUPPLY_X + 0.05, 2.35, f"서울 공급 {SEOUL_SUPPLY_X:.2f}×", color=MUTED, fontsize=9)
-    ax.text(2.3, seoul_score_x + 0.08, f"서울 점수 {seoul_score_x:.2f}×", color=MUTED, fontsize=9)
+    ax.text(5.3, seoul_score_x + 0.08, f"서울 점수 {seoul_score_x:.2f}×", color=MUTED, fontsize=9)
 
     for _, r in df.iterrows():
         ax.scatter(r["eff_growth_x"], r["score_growth_x"], s=110, marker=group_marker(r["gu"]),
@@ -57,7 +59,7 @@ def main():
 
     sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
     cb = fig.colorbar(sm, ax=ax, shrink=0.7, pad=0.02)
-    cb.set_label("Hot Spot 집계구 수 증감 (2021→2024)", fontsize=10, color=INK)
+    cb.set_label("Hot Spot 집계구 수 증감 (2021–2024)", fontsize=10, color=INK)
 
     handles = [
         Line2D([], [], marker="s", ls="", mfc="white", mec=INK, ms=9, label="초기 시 집중투자(집중충전소 1차)"),
@@ -72,7 +74,7 @@ def main():
     ax.grid(color=GRID, lw=0.6)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.text(0.01, 0.005, "주: 유효 공급 = 급속·아파트 제외·평일 11–13시 운영. 이용제한(비공용) 충전기 포함 상태. Gi* KNN k=20.",
+    fig.text(0.01, 0.005, "주: 유효 공급 = 급속·아파트 제외·평일 11–13시 운영. 비공용(이용제한·운수사 전용) 충전기 제외. Gi* KNN k=20.",
              fontsize=8, color=MUTED)
     fig.savefig(OUT_FP, dpi=150, facecolor="white", bbox_inches="tight")
     print(OUT_FP)

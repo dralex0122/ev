@@ -7,6 +7,9 @@
 
 유효 공급은 g2sfca_final_supply.py와 동일 규칙(급속만, 아파트 v3 제외, 평일 11-13시 운영).
 연도별 스냅샷은 2024 데이터 설치연도 누적 필터라 철거 충전기가 빠져 있음 → 공급 감소는 원천적으로 관측 불가.
+
+2026-10-14: 비공용 충전기 제외 최종 버전(nonpublic)으로 전환 — 이용제한(UseLimitation=Y) +
+운수사·전용 키워드 26곳 제외(recompute_exclude_nonpublic.py). 제외 전 산출물은 output/presentation_k20에 남아 있음.
 """
 import json
 import os
@@ -32,11 +35,13 @@ plt.rcParams["axes.unicode_minus"] = False
 
 NAS = "/mnt/cowork/EV"
 BOUNDARY_FP = f"{NAS}/input/raw/집계구_2016/집계구.shp"
-GI_FP = f"{NAS}/output/gi_star_knn_sensitivity_2sfca.csv"
-SCORE_PATH = lambda y: f"{NAS}/output/g2sfca_sfast_final_gaussian/g2sfca_score_{y}_week_낮_normal.csv"
-OUT_DIR = f"{NAS}/output/presentation_k20"
-MAP_FP = f"{NAS}/output/maps/presentation_2sfca_weekday_grid_k20.png"
-GU_FIG_FP = f"{NAS}/output/maps/presentation_gu_relative_position_k20.png"
+RECHECK_DIR = f"{NAS}/output/recheck_2026-10-13"
+GI_FP = f"{RECHECK_DIR}/gi_k20_3ver.csv"
+CAND_FP = f"{RECHECK_DIR}/nonpublic_keyword_candidates.csv"
+SCORE_PATH = lambda y: f"{NAS}/output/g2sfca_sfast_final_gaussian_nonpublic/g2sfca_score_{y}_week_낮_normal.csv"
+OUT_DIR = f"{NAS}/output/presentation_k20_nonpublic"
+MAP_FP = f"{NAS}/new_output/presentation_2sfca_weekday_grid_k20.png"
+GU_FIG_FP = f"{NAS}/new_output/presentation_gu_relative_position_k20.png"
 
 YEARS = [2021, 2022, 2023, 2024]
 K = 20
@@ -164,6 +169,8 @@ def transitions(gdf, gi):
 def effective_supply_by_gu(gdf):
     apt = pd.read_csv(APT_FP, dtype={"station_id": str})
     apt_set = set(apt[apt.is_apt_v3]["station_id"])
+    cand = pd.read_csv(CAND_FP, dtype={"station_id": str})
+    excl_set = apt_set | set(cand[cand.final_label == "제외"].station_id)
     rows = []
     for year in YEARS:
         fp = unicodedata.normalize("NFD", os.path.join(CHARGER_DIR_FASTONLY, f"metro7_ev_chargers_{year}_fastonly.geojson"))
@@ -173,15 +180,15 @@ def effective_supply_by_gu(gdf):
         ch = ch[ch["city"] == "서울특별시"].to_crs(5179)
         ch["station_id"] = ch["station_id"].astype(str)
         ch["eff"] = [
-            0 if (sid in apt_set or not is_open(parse_open_window(oh or ""), 11, 13, "week")) else (fc or 0)
-            for sid, oh, fc in zip(ch["station_id"], ch["openinghour"], ch["fast_count"])
+            0 if (sid in excl_set or ul == "Y" or not is_open(parse_open_window(oh or ""), 11, 13, "week")) else (fc or 0)
+            for sid, ul, oh, fc in zip(ch["station_id"], ch["UseLimitation"], ch["openinghour"], ch["fast_count"])
         ]
         j = gpd.sjoin(ch, gdf[["gu", "geometry"]], how="left", predicate="within")
         agg = j.groupby("gu").agg(fast_all=("fast_count", "sum"), fast_eff=("eff", "sum"),
                                   stations_eff=("eff", lambda s: int((s > 0).sum())))
         agg["year"] = year
         rows.append(agg.reset_index())
-        print(f"{year}: 서울 급속 {int(ch['fast_count'].sum())}기 / 유효(비아파트·낮운영) {int(ch['eff'].sum())}기, 구 미매칭 {int(j['gu'].isna().sum())}개소")
+        print(f"{year}: 서울 급속 {int(ch['fast_count'].sum())}기 / 유효(비아파트·낮운영·공용) {int(ch['eff'].sum())}기, 구 미매칭 {int(j['gu'].isna().sum())}개소")
     return pd.concat(rows, ignore_index=True)
 
 
@@ -275,8 +282,7 @@ def plot_gu(summ):
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     gdf = load_boundary()
-    gi = pd.read_csv(GI_FP, dtype={"oa_code": str})
-    gi = gi[(gi["model"] == "2SFCA") & (gi["k"] == K)]
+    gi = pd.read_csv(GI_FP, dtype={"oa_code": str}).rename(columns={"nonpublic": "gi_class"})[["year", "oa_code", "gi_class"]]
     scores = {y: pd.read_csv(SCORE_PATH(y), dtype={"oa_code": str}).set_index("oa_code")["accessibility_score"] for y in YEARS}
 
     plot_map(gdf, gi, scores)

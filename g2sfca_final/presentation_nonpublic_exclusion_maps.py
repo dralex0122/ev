@@ -29,8 +29,8 @@ plt.rcParams["axes.unicode_minus"] = False
 GI_FP = f"{OUT_DIR}/gi_k20_3ver.csv"
 CAND_FP = f"{OUT_DIR}/nonpublic_keyword_candidates.csv"
 SUMMARY_FP = f"{OUT_DIR}/hotspot_compare_3ver.csv"
-GRID_FP = f"{NAS}/output/maps/presentation_nonpublic_3ver_grid_k20.png"
-CHANGE_FP = f"{NAS}/output/maps/presentation_nonpublic_2024_change_k20.png"
+GRID_FP = f"{NAS}/new_output/presentation_nonpublic_3ver_grid_k20.png"
+CHANGE_FP = f"{NAS}/new_output/presentation_nonpublic_2024_change_k20.png"
 
 HOT_COLOR = "#e60000"
 COLD_COLOR = "#0047ab"
@@ -65,13 +65,34 @@ def load_boundary():
     return gdf, gu
 
 
+def fill_by(ax, gdf, values, colors):
+    """값별로 dissolve 후 그림 — 집계구를 하나씩 그리면 경계마다 흰 틈(얼룩)이 생김"""
+    d = gdf[["geometry"]].assign(v=values).dissolve(by="v")
+    d["geometry"] = d.geometry.buffer(1).buffer(-1)
+    for v, r in d.iterrows():
+        gpd.GeoSeries([r.geometry], crs=gdf.crs).plot(ax=ax, color=colors[v], linewidth=0)
+
+
 def draw_classes(ax, gdf, classes, gu):
-    gdf.assign(c=classes).plot(ax=ax, color=[CLASS_COLOR[c] for c in classes], linewidth=0)
+    fill_by(ax, gdf, classes, CLASS_COLOR)
     gu.boundary.plot(ax=ax, color=GU_LINE, linewidth=0.35)
     ax.set_axis_off()
 
 
+def before_supply():
+    """기존 버전 공급(이용제한 포함) — summary에는 비어 있어 직접 계산"""
+    apt = pd.read_csv(APT_FP, dtype={"station_id": str})
+    apt_set = set(apt[apt.is_apt_v3]["station_id"])
+    out = {}
+    for y in YEARS:
+        st = load_stations(y)
+        out[y] = int(st[~st.station_id.isin(apt_set) & st.is_open].fast_count.sum())
+    return out
+
+
 def plot_grid(gdf, gu, gi, summary):
+    before_sup = before_supply()
+    print(f">> 기존 공급: {before_sup}")
     fig, axes = plt.subplots(3, 4, figsize=(18, 13.5))
     for r, (v, vlabel) in enumerate(VERSIONS):
         for c, year in enumerate(YEARS):
@@ -79,7 +100,8 @@ def plot_grid(gdf, gu, gi, summary):
             cls = gi[gi.year == year].set_index("oa_code")[v].reindex(gdf["TOT_REG_CD"]).values
             draw_classes(ax, gdf, cls, gu)
             s = summary[(summary.year == year) & (summary.version == v)].iloc[0]
-            sup = "" if pd.isna(s.chargers) else f"공급 {int(s.chargers):,}기 · "
+            n = before_sup[year] if v == "before" else int(s.chargers)
+            sup = f"공급 {n:,}기 · "
             ax.text(0.5, -0.02, f"{sup}Hot {s.hot:,} · Cold {s.cold:,}", transform=ax.transAxes,
                     ha="center", va="top", fontsize=10, color=MUTED)
             if r == 0:
@@ -138,7 +160,7 @@ def plot_change(gdf, gu, gi):
         ax.set_title(title, fontsize=14, color=INK, fontweight="bold", pad=8)
 
     ax = axes[2]
-    gdf.plot(ax=ax, color=[CHANGE_COLOR[c] for c in chg], linewidth=0)
+    fill_by(ax, gdf, chg, CHANGE_COLOR)
     gu.boundary.plot(ax=ax, color=GU_LINE, linewidth=0.35)
     for kind, color, label in [("Y", "#1a1a1a", "이용제한(Y)"), ("KW", "#e08a00", "운수사·전용")]:
         p = pts[pts.kind == kind]
