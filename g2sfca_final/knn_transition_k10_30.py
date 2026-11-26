@@ -42,6 +42,17 @@ def draw(ax, tr, n, k, legend_fs=9.5, label_gu=True):
     ax.legend(handles=handles, loc="lower left", frameon=False, fontsize=legend_fs, bbox_to_anchor=(-0.04, -0.02))
 
 
+def panel_scale_bar(ax, x0_frac=0.04, y_frac=0.04, seg_m=5000):
+    """5패널용 축척(0·5·10 km, 작은 글씨) — 기본 2.5 km 눈금은 작은 패널에서 글자가 겹침."""
+    x0, x1 = ax.get_xlim(); y0, y1 = ax.get_ylim()
+    sx, sy, h = x0 + (x1 - x0) * x0_frac, y0 + (y1 - y0) * y_frac, (y1 - y0) * 0.012
+    for i in range(2):
+        ax.add_patch(mpatches.Rectangle((sx + i * seg_m, sy), seg_m, h, facecolor=P.INK if i == 0 else "white",
+                                        edgecolor=P.INK, linewidth=0.8))
+    for i, lab in enumerate(["0", "5", "10 km"]):
+        ax.text(sx + i * seg_m, sy + h * 1.6, lab, ha="center", va="bottom", fontsize=8, color=P.INK)
+
+
 def main():
     s21, s24 = P.score(2021), P.score(2024)
     res, rows = {}, []
@@ -87,7 +98,7 @@ def main():
         ax.set_title(f"k = {k}  ({sub})", fontsize=12, color=P.INK, pad=2)
         ax.text(0.98, 0.02, f"종로·중구 Hot {int(r['종로중구_hot_2021'])}→{int(r['종로중구_hot_2024'])}",
                 transform=ax.transAxes, ha="right", va="bottom", fontsize=9, color=P.MUTED)
-    P.north_arrow(axes[0, 0]); P.scale_bar(axes[0, 0])
+    P.north_arrow(axes[0, 0]); panel_scale_bar(axes[0, 0])
     lax = axes.flat[-1]; lax.set_axis_off()
     handles = [mpatches.Patch(facecolor=P.TRANS_COLOR[l], edgecolor="#bbb", label=l) for l in LABELS]
     handles.append(mpatches.Patch(facecolor="none", edgecolor=P.INK, linewidth=1.5, label="종로구·중구"))
